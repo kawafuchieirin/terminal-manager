@@ -15,19 +15,37 @@ install_brew_packages() {
     exit 1
   fi
 
-  # WezTerm（cask）
+  # 旧 wezterm (安定版) が入っていれば nightly に置き換える
   if brew list --cask wezterm &>/dev/null; then
-    echo "既にインストール済み: wezterm"
-  else
-    echo "インストール中: wezterm"
-    brew install --cask wezterm
+    echo "安定版 wezterm を検出。nightly ビルドへ置き換えます"
+    brew uninstall --cask wezterm
   fi
+
+  # cask (アプリ・フォント)
+  local casks=(
+    wezterm@nightly
+    font-udev-gothic
+    font-hackgen-nerd
+  )
+
+  for cask in "${casks[@]}"; do
+    if brew list --cask "$cask" &>/dev/null; then
+      echo "既にインストール済み: $cask"
+    else
+      echo "インストール中: $cask"
+      brew install --cask "$cask"
+    fi
+  done
 
   # formula
   local packages=(
     starship
     zsh-autosuggestions
     zsh-syntax-highlighting
+    fzf
+    fd
+    ripgrep
+    bat
     pre-commit
     gitleaks
     shellcheck
