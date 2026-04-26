@@ -26,20 +26,14 @@ alias cp='cp -i'
 alias mv='mv -i'
 
 ##### Shortcuts #####
-alias c='clear'
 alias h='history'
 alias v='nvim'
-alias vi='nvim'
 
 ##### Docker #####
-alias d='docker'
 alias dc='docker compose'
 alias dps='docker ps'
 alias dcu='docker compose up -d'
 alias dcd='docker compose down'
-
-##### zoxide #####
-alias cd='z'
 
 ##### Claude #####
 alias cc='claude --dangerously-skip-permissions'
