@@ -24,6 +24,7 @@ install_brew_packages() {
   # cask (アプリ・フォント)
   local casks=(
     wezterm@nightly
+    font-plemol-jp-nf
     font-udev-gothic
     font-hackgen-nerd
   )

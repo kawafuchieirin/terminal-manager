@@ -4,10 +4,11 @@ local config = wezterm.config_builder()
 -- =========================
 -- フォント
 -- =========================
--- UDEV Gothic 35LG: BIZ UDGothic + JetBrains Mono (UD系で視認性最重視)+リガチャ
--- Nerd Font アイコンは HackGen Console NF にフォールバック
--- 透過背景でもくっきり読めるよう Bold weight + サイズ大き目
+-- PlemolJP Console NF: IBM Plex Mono + IBM Plex Sans JP ベースの UD 等幅。
+-- 透過背景でも特に視認性が高く、Nerd Font アイコンも内蔵。
+-- フォールバックは UDEV Gothic 35LG / HackGen Console NF / Hiragino Sans。
 config.font = wezterm.font_with_fallback({
+  { family = "PlemolJP Console NF", weight = "Bold" },
   { family = "UDEV Gothic 35LG", weight = "Bold" },
   { family = "HackGen Console NF", weight = "Bold" },
   { family = "Hiragino Sans" },
@@ -16,8 +17,10 @@ config.font_size = 15.0
 config.line_height = 1.15
 config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
 config.bold_brightens_ansi_colors = true
+-- 透過背景での色滲み（フリンジ）を抑えるため LCD サブピクセルではなく
+-- グレースケール AA（Normal）でレンダリング。Light hinting で細部のシャープさは維持。
 config.freetype_load_target = "Light"
-config.freetype_render_target = "HorizontalLcd"
+config.freetype_render_target = "Normal"
 
 -- =========================
 -- カラースキーム
@@ -27,8 +30,17 @@ config.color_scheme = "Tokyo Night"
 -- =========================
 -- ウィンドウ
 -- =========================
-config.window_background_opacity = 1
+-- フォーカス時は読みやすさ重視で不透明寄り、非アクティブ時は透けて背景が見える
+local FOCUSED_OPACITY = 0.85
+local UNFOCUSED_OPACITY = 0.5
+config.window_background_opacity = FOCUSED_OPACITY
 config.macos_window_background_blur = 20
+
+wezterm.on("window-focus-changed", function(window, _)
+  local overrides = window:get_config_overrides() or {}
+  overrides.window_background_opacity = window:is_focused() and FOCUSED_OPACITY or UNFOCUSED_OPACITY
+  window:set_config_overrides(overrides)
+end)
 config.window_decorations = "RESIZE"
 config.window_padding = { left = 8, right = 8, top = 8, bottom = 8 }
 config.initial_cols = 120

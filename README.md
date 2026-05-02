@@ -22,7 +22,7 @@ chmod +x setup.sh
 ### setup.sh が行うこと
 
 1. Homebrew パッケージのインストール
-   - cask: `wezterm@nightly`（nightly ビルド = 事実上のメイン）, `font-udev-gothic`（UD系で視認性最重視）, `font-hackgen-nerd`（Nerd Font アイコン用フォールバック）
+   - cask: `wezterm@nightly`（nightly ビルド = 事実上のメイン）, `font-plemol-jp-nf`（PlemolJP Console NF / 透過背景でも最高クラスの視認性, Nerd Font 内蔵）, `font-udev-gothic`（UD系フォールバック）, `font-hackgen-nerd`（Nerd Font アイコン用フォールバック）
    - formula: `starship`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `fzf`, `fd`, `ripgrep`, `bat`, `pre-commit`, `gitleaks`, `shellcheck`
    - 既存の安定版 `wezterm` が入っている場合は自動で nightly に置き換え
 2. WezTerm 設定のシンボリックリンク作成（`~/.config/wezterm/`）
@@ -53,14 +53,14 @@ chmod +x setup.sh
 
 | カテゴリ | 設定 | 値 | 説明 |
 |---------|------|-----|------|
-| フォント | `font` | UDEV Gothic 35LG (Bold) → HackGen Console NF (Bold) → Hiragino Sans | UD系で視認性最重視。透過背景でもくっきり見える Bold ウェイト |
+| フォント | `font` | PlemolJP Console NF (Bold) → UDEV Gothic 35LG (Bold) → HackGen Console NF (Bold) → Hiragino Sans | IBM Plex 系の UD 等幅で透過背景でも最高クラスの視認性。Nerd Font 内蔵 |
 | | `font_size` | 15.0 | 透過時の視認性向上のため大き目 |
 | | `line_height` | 1.15 | 行間を少しゆとりを持たせて視認性UP |
-| | `harfbuzz_features` | `calt=1, clig=1, liga=1` | リガチャ有効化（`=>`, `!=` 等。LG バリアント使用時のみ作動） |
+| | `harfbuzz_features` | `calt=1, clig=1, liga=1` | リガチャ有効化（`=>`, `!=` 等） |
 | | `bold_brightens_ansi_colors` | `true` | ANSI ボールドテキストを明色化してコントラスト UP |
-| | `freetype_load_target` | `"Light"` / `"HorizontalLcd"` | 透過時のにじみ抑制＋サブピクセル描画 |
+| | `freetype_load_target` / `freetype_render_target` | `"Light"` / `"Normal"` | Light hinting でシャープさを保ちつつ、グレースケール AA で透過時の色滲み（フリンジ）を排除 |
 | カラー | `color_scheme` | Tokyo Night | 暗紫系の人気スキーム |
-| ウィンドウ | `window_background_opacity` | 0.92 | 背景透過 |
+| ウィンドウ | `window_background_opacity` | 0.85（フォーカス時）/ 0.5（非アクティブ時） | フォーカス連動で自動切替。作業中は読みやすく、離席中は背景が透ける |
 | | `macos_window_background_blur` | 20 | すりガラス風ブラー |
 | | `window_decorations` | `RESIZE` | タイトルバー削減 |
 | | `window_padding` | 8px (上下左右) | |
@@ -87,7 +87,7 @@ chmod +x setup.sh
 | `Cmd+Shift++` | 透明度を上げる（より不透明に、`+0.05`、最大 `1.0`） |
 | `Cmd+Shift+-` | 透明度を下げる（より透ける、`-0.05`、最小 `0.0`） |
 
-設定ファイル保存で自動リロードされる。手動リロードは `Ctrl+Shift+R`。透過具合は `window_background_opacity` を `0.85`〜`1.0` で調整。
+設定ファイル保存で自動リロードされる。手動リロードは `Ctrl+Shift+R`。透過具合は `wezterm/wezterm.lua` 冒頭の `FOCUSED_OPACITY` / `UNFOCUSED_OPACITY` で調整（フォーカス連動の自動切替は `window-focus-changed` イベントで実装）。
 
 ## Zsh
 
