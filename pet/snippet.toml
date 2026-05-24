@@ -1,0 +1,72 @@
+
+[[Snippets]]
+  Description = "terminal-manager のセットアップを実行（冪等）"
+  Output = ""
+  Tag = ["terminal-manager", "setup"]
+  command = "cd ~/work-space/terminal-manager && ./setup.sh"
+
+[[Snippets]]
+  Description = "pre-commit を全ファイルに手動実行"
+  Output = ""
+  Tag = ["git", "pre-commit"]
+  command = "pre-commit run --all-files"
+
+[[Snippets]]
+  Description = "git worktree を新規ブランチで追加"
+  Output = ""
+  Tag = ["git", "worktree"]
+  command = "git worktree add ../<dir> -b <branch>"
+
+[[Snippets]]
+  Description = "git worktree を一覧表示"
+  Output = ""
+  Tag = ["git", "worktree"]
+  command = "git worktree list"
+
+[[Snippets]]
+  Description = "git のコミット履歴を全ブランチ込みでグラフ表示"
+  Output = ""
+  Tag = ["git"]
+  command = "git log --oneline --graph --decorate --all"
+
+[[Snippets]]
+  Description = "docker compose を再ビルドして起動"
+  Output = ""
+  Tag = ["docker"]
+  command = "docker compose up -d --build"
+
+[[Snippets]]
+  Description = "docker の未使用リソースを一括削除"
+  Output = ""
+  Tag = ["docker"]
+  command = "docker system prune -af"
+
+[[Snippets]]
+  Description = "ssh 接続（ユーザ／ホストを指定）"
+  Output = ""
+  Tag = ["ssh"]
+  command = "ssh <user>@<host>"
+
+[[Snippets]]
+  Description = "指定ポートを使用中のプロセスを表示"
+  Output = ""
+  Tag = ["network"]
+  command = "lsof -i :<port=3000>"
+
+[[Snippets]]
+  Description = "ripgrep でカレント配下をパターン検索（隠しファイル含む・.git 除外）"
+  Output = ""
+  Tag = ["search"]
+  command = "rg --hidden --glob '!.git' '<pattern>'"
+
+[[Snippets]]
+  Description = "Gitで ステージ済み、つまり git add 済みのファイルのうち、<output> に該当するもののファイル名だけを表示"
+  Output = ""
+  Tag = []
+  command = "git diff --cached --name-only -- <output> | fzf --preview 'git diff --cached --color=always -- {}'"
+
+[[Snippets]]
+  Description = "study-kanban"
+  Output = ""
+  Tag = []
+  command = "study-kanban"

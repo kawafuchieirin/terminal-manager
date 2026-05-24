@@ -78,7 +78,7 @@ config.check_for_updates = false
 -- =========================
 config.keys = {
   { key = "t", mods = "CMD", action = wezterm.action.SpawnTab("CurrentPaneDomain") },
-  { key = "w", mods = "CMD", action = wezterm.action.CloseCurrentTab({ confirm = false }) },
+  { key = "w", mods = "CMD", action = wezterm.action.CloseCurrentPane({ confirm = false }) },
   { key = "1", mods = "CMD", action = wezterm.action.ActivateTab(0) },
   { key = "2", mods = "CMD", action = wezterm.action.ActivateTab(1) },
   { key = "3", mods = "CMD", action = wezterm.action.ActivateTab(2) },

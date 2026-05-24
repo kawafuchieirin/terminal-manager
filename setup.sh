@@ -47,6 +47,8 @@ install_brew_packages() {
     fd
     ripgrep
     bat
+    pet
+    lazygit
     pre-commit
     gitleaks
     shellcheck
@@ -182,6 +184,93 @@ EOF
 }
 
 # =========================
+# pet (コマンドスニペット管理)
+# =========================
+setup_pet() {
+  local config_dir="$HOME/.config/pet"
+  local source_snippet="$SCRIPT_DIR/pet/snippet.toml"
+  local target_snippet="$config_dir/snippet.toml"
+  local config_file="$config_dir/config.toml"
+  local select_cmd="$SCRIPT_DIR/pet/select.sh"
+
+  echo "=== pet セットアップ ==="
+
+  mkdir -p "$config_dir"
+
+  # selectcmd（色分け + カテゴリ絞り込み付き fzf ラッパー）に実行権限を付与
+  chmod +x "$select_cmd"
+
+  # snippet.toml はリポジトリ側を実体とし、シンボリックリンクを張る
+  if [ -f "$target_snippet" ] && [ ! -L "$target_snippet" ]; then
+    echo "既存の snippet.toml をバックアップ: ${target_snippet}.bak"
+    mv "$target_snippet" "${target_snippet}.bak"
+  fi
+
+  # 壊れたシンボリックリンクの場合は削除
+  if [ -L "$target_snippet" ] && [ ! -e "$target_snippet" ]; then
+    echo "壊れたシンボリックリンクを削除: $target_snippet"
+    rm "$target_snippet"
+  fi
+
+  if [ -L "$target_snippet" ]; then
+    echo "シンボリックリンクは既に存在します: $target_snippet"
+  else
+    ln -s "$source_snippet" "$target_snippet"
+    echo "シンボリックリンクを作成: $target_snippet -> $source_snippet"
+  fi
+
+  # config.toml は絶対パスを含むため ~ 展開に依存せずマシン側で生成する。
+  # 値はすべて setup.sh から導出できるため、selectcmd 等の更新を確実に反映する
+  # よう毎回上書きする（マシン固有のカスタマイズは行わない方針）。
+  cat > "$config_file" << EOF
+[General]
+  snippetfile = "$target_snippet"
+  editor = "nvim"
+  column = 40
+  selectcmd = "$select_cmd"
+  sortby = "recency"
+EOF
+  echo "config.toml を生成: $config_file"
+
+  echo "pet セットアップ完了"
+}
+
+# =========================
+# lazygit (Git TUI)
+# =========================
+setup_lazygit() {
+  # lazygit は macOS では既定で ~/Library/Application Support/lazygit/ を参照する
+  # （XDG_CONFIG_HOME 未設定時）。リポジトリ側を実体とし、ここにリンクを張る。
+  local config_dir="$HOME/Library/Application Support/lazygit"
+  local source_file="$SCRIPT_DIR/lazygit/config.yml"
+  local target_file="$config_dir/config.yml"
+
+  echo "=== lazygit セットアップ ==="
+
+  mkdir -p "$config_dir"
+
+  if [ -f "$target_file" ] && [ ! -L "$target_file" ]; then
+    echo "既存の config.yml をバックアップ: ${target_file}.bak"
+    mv "$target_file" "${target_file}.bak"
+  fi
+
+  # 壊れたシンボリックリンクの場合は削除
+  if [ -L "$target_file" ] && [ ! -e "$target_file" ]; then
+    echo "壊れたシンボリックリンクを削除: $target_file"
+    rm "$target_file"
+  fi
+
+  if [ -L "$target_file" ]; then
+    echo "シンボリックリンクは既に存在します: $target_file"
+  else
+    ln -s "$source_file" "$target_file"
+    echo "シンボリックリンクを作成: $target_file -> $source_file"
+  fi
+
+  echo "lazygit セットアップ完了"
+}
+
+# =========================
 # pre-commit
 # =========================
 setup_pre_commit() {
@@ -223,6 +312,10 @@ main() {
   setup_starship
   echo ""
   setup_zsh
+  echo ""
+  setup_pet
+  echo ""
+  setup_lazygit
   echo ""
   setup_pre_commit
 

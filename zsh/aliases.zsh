@@ -9,6 +9,7 @@ alias gd='git diff'
 alias gco='git checkout'
 alias gb='git branch'
 alias gpl='git pull'
+alias lg='lazygit'
 
 ##### Directory navigation #####
 alias ..='cd ..'
@@ -34,6 +35,10 @@ alias dc='docker compose'
 alias dps='docker ps'
 alias dcu='docker compose up -d'
 alias dcd='docker compose down'
+
+##### Pet (snippet manager) #####
+alias pn='pet new'
+alias pe='pet edit'
 
 ##### Claude #####
 alias cc='claude --dangerously-skip-permissions'

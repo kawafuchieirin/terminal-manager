@@ -23,12 +23,14 @@ chmod +x setup.sh
 
 1. Homebrew パッケージのインストール
    - cask: `wezterm@nightly`（nightly ビルド = 事実上のメイン）, `font-plemol-jp-nf`（PlemolJP Console NF / 透過背景でも最高クラスの視認性, Nerd Font 内蔵）, `font-udev-gothic`（UD系フォールバック）, `font-hackgen-nerd`（Nerd Font アイコン用フォールバック）
-   - formula: `starship`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `fzf`, `fd`, `ripgrep`, `bat`, `pre-commit`, `gitleaks`, `shellcheck`
+   - formula: `starship`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `fzf`, `fd`, `ripgrep`, `bat`, `pet`, `lazygit`, `pre-commit`, `gitleaks`, `shellcheck`
    - 既存の安定版 `wezterm` が入っている場合は自動で nightly に置き換え
 2. WezTerm 設定のシンボリックリンク作成（`~/.config/wezterm/`）
 3. Starship 設定のシンボリックリンク作成（`~/.config/starship.toml`）
 4. Zsh 設定のシンボリックリンク作成（`~/.config/zsh/`）+ `~/.zshrc` に source 行を追加
-5. pre-commit フックのインストール（`.git/hooks/pre-commit`）
+5. pet スニペット設定（`~/.config/pet/snippet.toml` のリンク作成 + `config.toml` を生成）
+6. lazygit 設定のシンボリックリンク作成（`~/Library/Application Support/lazygit/config.yml`）
+7. pre-commit フックのインストール（`.git/hooks/pre-commit`）
 
 セットアップ完了後は **WezTerm を `Cmd+Q` で完全終了→再起動** すると、フォント・カラースキーム・透過などが反映される。
 
@@ -43,6 +45,10 @@ chmod +x setup.sh
 | `zsh/.zshrc` | Zsh のメイン設定（プラグイン読み込み・キーバインド・fzf×fd×bat 連携） |
 | `zsh/aliases.zsh` | シェルエイリアス定義 |
 | `zsh/hidden/` | 環境固有の設定（Git 管理外、`.zsh` ファイルを自動読み込み） |
+| `pet/snippet.toml` | [pet](https://github.com/knqyf263/pet) コマンドスニペット集（`Ctrl+G` で呼び出し） |
+| `pet/select.sh` | pet の selectcmd。スニペットを主タグごとに色分けし、`F1`〜`F6` でカテゴリ絞り込みできる fzf ラッパー |
+| `pet/README.md` | pet の使い方（呼び出し・登録・編集・共有） |
+| `lazygit/config.yml` | [lazygit](https://github.com/jesseduffield/lazygit) Git TUI の設定（`lg` で起動） |
 | `.pre-commit-config.yaml` | [pre-commit](https://pre-commit.com/) フック定義（シークレット検出・基本チェック・shell lint） |
 
 ## WezTerm
@@ -64,21 +70,24 @@ chmod +x setup.sh
 | | `macos_window_background_blur` | 20 | すりガラス風ブラー |
 | | `window_decorations` | `RESIZE` | タイトルバー削減 |
 | | `window_padding` | 8px (上下左右) | |
+| | `initial_cols` / `initial_rows` | 120 / 36 | 起動時のウィンドウサイズ |
 | タブバー | `use_fancy_tab_bar` | `false` | テキスト式 |
 | | `tab_bar_at_bottom` | `true` | 下部配置 |
 | | `hide_tab_bar_if_only_one_tab` | `true` | タブ1つなら非表示 |
+| | `show_new_tab_button_in_tab_bar` | `false` | 新規タブ＋ボタンを非表示 |
 | ペイン | `inactive_pane_hsb` | sat 0.9 / br 0.7 | 非アクティブを暗く |
 | 挙動 | `window_close_confirmation` | `NeverPrompt` | クローズ確認なし |
 | | `scrollback_lines` | 10000 | |
 | | `use_ime` | `true` | macOS IME（ことえり等）対応 |
 | 性能 | `front_end` | `WebGpu` | GPU レンダリング |
 | | `max_fps` | 120 | |
+| | `check_for_updates` | `false` | 自動更新チェックを無効化 |
 
 ### キーバインド (macOS)
 
 | キー | 動作 |
 |------|------|
-| `Cmd+T` / `Cmd+W` | 新規タブ / タブを閉じる |
+| `Cmd+T` / `Cmd+W` | 新規タブ / 現在のペインを閉じる（最後の1ペインならタブも閉じる） |
 | `Cmd+1`〜`Cmd+3` | タブ切り替え |
 | `Cmd+D` / `Cmd+Shift+D` | 横分割 / 縦分割 |
 | `Cmd+[` / `Cmd+]` | ペイン移動 |
@@ -101,6 +110,8 @@ chmod +x setup.sh
 | [fd](https://github.com/sharkdp/fd) | `find` の高速代替 | `FZF_DEFAULT_COMMAND` / `FZF_ALT_C_COMMAND` のバックエンドとして連携、`.gitignore` を尊重 |
 | [ripgrep](https://github.com/BurntSushi/ripgrep) (`rg`) | `grep` の高速代替 | デフォルトで `.gitignore` を尊重しサブディレクトリを再帰検索 |
 | [bat](https://github.com/sharkdp/bat) | `cat` の代替（ハイライト+Git diff） | fzf の `Ctrl+T` プレビューで使用、`BAT_THEME=TwoDark` |
+| [pet](https://github.com/knqyf263/pet) | コマンドスニペット管理 | `Ctrl+G` で fzf 検索 → プロンプトに挿入。スニペットは `pet/snippet.toml` で Git 管理 |
+| [lazygit](https://github.com/jesseduffield/lazygit) | Git 操作の TUI | `lg` で起動。設定は `lazygit/config.yml`（macOS 既定パス `~/Library/Application Support/lazygit/` へリンク） |
 | [mise](https://mise.jdx.dev/) | 言語ランタイム・CLI ツールのバージョン管理 | `.zshrc` で `mise activate zsh` を呼び出し（任意導入：未インストールならスキップ） |
 | [zoxide](https://github.com/ajeetdsouza/zoxide) | 高速ディレクトリジャンプ（`z` コマンド） | `.zshrc` で `zoxide init zsh` を呼び出し、`cd` を `z` にエイリアス（任意導入） |
 
@@ -115,7 +126,12 @@ chmod +x setup.sh
 | `Ctrl+R` | fzf でコマンド履歴を曖昧検索 |
 | `Ctrl+T` | fzf でカレント配下のファイルを曖昧検索して挿入 |
 | `Alt+C` | fzf でカレント配下のディレクトリを曖昧検索して `cd` |
+| `Ctrl+G` | pet スニペットを fzf 検索し、選んだコマンドをプロンプトに挿入（少し変更して実行できる） |
 | `**` + `Tab` | fzf 補完（パス・プロセス等を曖昧検索） |
+
+### 履歴（History）
+
+複数タブ・複数端末で履歴を即時共有（`SHARE_HISTORY`）。重複コマンドは古い方を削除（`HIST_IGNORE_ALL_DUPS`）、先頭スペース付きコマンドは記録しない（`HIST_IGNORE_SPACE`）、余分な空白は圧縮して記録（`HIST_REDUCE_BLANKS`）。履歴展開（`!`）は即実行せずプロンプトに展開（`HIST_VERIFY`）。保存件数は `HISTSIZE` / `SAVEHIST` ともに 100,000 件。`Ctrl+R`（fzf）からどの端末の履歴も横断検索できる。
 
 ### エイリアス
 
@@ -133,6 +149,7 @@ chmod +x setup.sh
 | `gco` | `git checkout` |
 | `gb` | `git branch` |
 | `gpl` | `git pull` |
+| `lg` | `lazygit`（Git 操作の TUI を起動） |
 
 #### ナビゲーション・ファイル操作
 
@@ -143,25 +160,31 @@ chmod +x setup.sh
 | `ll` | `ls -lah` |
 | `la` | `ls -a` |
 | `rm` / `cp` / `mv` | 確認付き（`-i`） |
-| `cd` | `z`（zoxide） |
 
 #### ショートカット
 
 | エイリアス | コマンド |
 |-----------|---------|
-| `c` | `clear` |
 | `h` | `history` |
-| `v` / `vi` | `nvim` |
+| `v` | `nvim` |
 
 #### Docker
 
 | エイリアス | コマンド |
 |-----------|---------|
-| `d` | `docker` |
 | `dc` | `docker compose` |
 | `dps` | `docker ps` |
 | `dcu` | `docker compose up -d` |
 | `dcd` | `docker compose down` |
+
+#### pet（コマンドスニペット）
+
+| エイリアス | コマンド |
+|-----------|---------|
+| `pn` | `pet new`（新規スニペットを対話的に登録） |
+| `pe` | `pet edit`（`snippet.toml` をエディタで直接編集） |
+
+> `prev` は `.zshrc` 定義のシェル関数（エイリアスではない）。直前に実行したコマンドをそのまま `pet new` に渡して登録する。タグも付けるなら `prev -t`。
 
 #### Claude
 
@@ -185,6 +208,27 @@ chmod +x setup.sh
 ### hidden/ ディレクトリ
 
 `~/.config/zsh/hidden/` に `.zsh` ファイルを置くと自動的に読み込まれる。API キーや PC 固有の PATH 設定など、Git 管理に含めたくない設定用。
+
+### コマンドスニペット（pet）
+
+「よく使うが覚えきれない」コマンドや、`<param>` で一部だけ差し替えて使いたいコマンドを登録・呼び出す仕組み。
+
+- **呼び出し**: `Ctrl+G` で fzf 検索が開き、選んだコマンドが**実行されずプロンプトに挿入**される。そのまま編集して Enter で実行できる（「少し変更して使う」用途）。
+- **色分け**: 一覧は主タグ（タグの先頭）ごとに色分けされる。`git`=緑 / `docker`=青 / `ssh`=黄 / `network`=シアン / `search`=ピンク / `terminal-manager`・`setup`=紫 / その他=グレー。
+- **カテゴリ絞り込み**: fzf 表示中に `F1`=全件 / `F2`=git / `F3`=docker / `F4`=ssh / `F5`=network / `F6`=search でカテゴリを切り替えられる（クエリを `'#<tag>` に差し替える方式）。タグ文字をそのまま入力しても絞り込める。
+- **登録**: `pn`（`pet new`）で対話的に追加。直前に実行したコマンドをそのまま登録するなら `prev`（タグも付けるなら `prev -t`）。`prev` は `.zshrc` 定義のシェル関数で、履歴から直近の実コマンドを取り出して `pet new` に渡す（`pet new` 単体では Command 欄が自動で埋まらないため）。
+- **編集**: `pe`（`pet edit`）で `snippet.toml` をエディタで直接編集。
+- **パラメータ**: `command` 内に `<param>` や `<param=default>` を書くとプレースホルダになる。挿入後にプロンプト上で値を埋める。
+- **selectcmd**: 色分けとカテゴリ絞り込みは `pet/select.sh`（fzf ラッパー）が担う。`config.toml` の `selectcmd` がこのスクリプトを指す。
+- **Git 管理**: スニペット本体は `pet/snippet.toml`（リポジトリ側の実体）。`~/.config/pet/snippet.toml` はそこへのシンボリックリンク。`config.toml` は絶対パスを含むため `setup.sh` がマシンごとに生成する（追跡対象外）。登録・編集後は通常どおり `git commit` で共有する。
+
+### Git TUI（lazygit）
+
+ステージング・コミット・ブランチ操作・push/pull を TUI で行う。`lg`（= `lazygit`）で Git リポジトリ内から起動。
+
+- **設定**: `lazygit/config.yml`（リポジトリ側の実体）。`mouseEvents: true`（マウス操作）/ `showBottomLine: false`（下部バー非表示で表示領域拡大）/ `editPreset: "nvim"`（ファイルを開くエディタ）/ `overrideGpg: true`（GPG 署名コミット対応）。
+- **配置**: lazygit は macOS では既定で `~/Library/Application Support/lazygit/config.yml` を参照する（`XDG_CONFIG_HOME` 未設定時）。`setup.sh` がそこへリポジトリ側へのシンボリックリンクを張る。参照先は `lazygit -cd` で確認できる。
+- **主なキー**: `Space`=ステージ / `a`=全ステージ / `c`=コミット / `C`=Amend / `p`=push / `P`=pull / `n`=ブランチ作成 / `z`=アンドゥ。
 
 ## Starship
 
