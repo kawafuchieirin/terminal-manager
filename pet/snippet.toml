@@ -1,3 +1,4 @@
+
 [[Snippets]]
   Description = "git worktree を一覧表示"
   Output = ""
@@ -51,3 +52,9 @@
   Output = ""
   Tag = []
   command = "study-kanban"
+
+[[Snippets]]
+  Description = "ローカルブランチの削除"
+  Output = ""
+  Tag = ["git"]
+  command = "git branch | grep -v '^\\*' | xargs -r git branch -d"
