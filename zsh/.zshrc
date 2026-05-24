@@ -10,6 +10,16 @@ source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 #### syntax highlighting
 source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+#### History #####
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=100000
+SAVEHIST=100000
+setopt SHARE_HISTORY          # 複数端末／タブ間で履歴を即時共有（追記・読込を含む）
+setopt HIST_IGNORE_ALL_DUPS   # 重複コマンドは古い方を履歴から削除
+setopt HIST_IGNORE_SPACE      # 先頭がスペースのコマンドは履歴に残さない
+setopt HIST_REDUCE_BLANKS     # 余分な空白を圧縮して記録
+setopt HIST_VERIFY            # 履歴展開（!）は即実行せずプロンプトに展開
+
 #### History search with arrow keys #####
 autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
 zle -N up-line-or-beginning-search
@@ -62,6 +72,28 @@ fi
 if command -v bat &>/dev/null; then
   export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
   export BAT_THEME="TwoDark"
+fi
+
+#### pet (snippet manager): Ctrl+G で登録済みスニペットを fzf 検索し、
+#### 選んだコマンドを実行せずプロンプトに挿入する（少し変更して Enter）
+if command -v pet &>/dev/null; then
+  function pet-select() {
+    BUFFER=$(pet search --query "$LBUFFER")
+    CURSOR=$#BUFFER
+    zle redisplay
+  }
+  zle -N pet-select
+  bindkey '^g' pet-select
+
+  # prev: 直前に実行したコマンドを pet new に渡して登録する
+  #       （pet new は Command 欄を自動で埋めないため、履歴から取り出して渡す）
+  #       対話シェルでは「prev 呼び出し行」自体が履歴の先頭に入るため、
+  #       それを読み飛ばして直近の実コマンドを拾う。タグ入力は `prev -t` で透過。
+  function prev() {
+    local last
+    last=$(fc -lrn | awk 'NF && $0 !~ /^[[:space:]]*prev([[:space:]]|$)/ {print; exit}')
+    pet new "$@" "$last"
+  }
 fi
 
 #### zoxide (must be at the end)

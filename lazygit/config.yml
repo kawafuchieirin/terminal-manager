@@ -1,0 +1,18 @@
+# lazygit 設定
+# 配置: ~/Library/Application Support/lazygit/config.yml（macOS 既定パス）への
+#       シンボリックリンク。実体はこのファイル。`lazygit -cd` で参照先を確認できる。
+# 設定値リファレンス: https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
+
+gui:
+  # マウス操作（クリックでのパネル移動・スクロール）を有効化
+  mouseEvents: true
+  # 画面下部のキーバインド案内バーを隠して表示領域を広く使う
+  showBottomLine: false
+
+os:
+  # コミット内のファイルを開く際などに使うエディタを Neovim に固定
+  editPreset: "nvim"
+
+git:
+  # GPG 署名コミットを lazygit から行えるよう、TUI ではなく端末側で GPG を処理させる
+  overrideGpg: true
