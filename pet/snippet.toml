@@ -1,22 +1,3 @@
-
-[[Snippets]]
-  Description = "terminal-manager のセットアップを実行（冪等）"
-  Output = ""
-  Tag = ["terminal-manager", "setup"]
-  command = "cd ~/work-space/terminal-manager && ./setup.sh"
-
-[[Snippets]]
-  Description = "pre-commit を全ファイルに手動実行"
-  Output = ""
-  Tag = ["git", "pre-commit"]
-  command = "pre-commit run --all-files"
-
-[[Snippets]]
-  Description = "git worktree を新規ブランチで追加"
-  Output = ""
-  Tag = ["git", "worktree"]
-  command = "git worktree add ../<dir> -b <branch>"
-
 [[Snippets]]
   Description = "git worktree を一覧表示"
   Output = ""

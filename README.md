@@ -46,7 +46,7 @@ chmod +x setup.sh
 | `zsh/aliases.zsh` | シェルエイリアス定義 |
 | `zsh/hidden/` | 環境固有の設定（Git 管理外、`.zsh` ファイルを自動読み込み） |
 | `pet/snippet.toml` | [pet](https://github.com/knqyf263/pet) コマンドスニペット集（`Ctrl+G` で呼び出し） |
-| `pet/select.sh` | pet の selectcmd。スニペットを主タグごとに色分けし、`F1`〜`F6` でカテゴリ絞り込みできる fzf ラッパー |
+| `pet/select.sh` | pet の selectcmd。表示だけコマンドを行頭へ並べ替え、主タグごとに色分けし、`F1`〜`F6` でカテゴリ絞り込み・下部プレビューでコマンド全文を表示する fzf ラッパー |
 | `pet/README.md` | pet の使い方（呼び出し・登録・編集・共有） |
 | `lazygit/config.yml` | [lazygit](https://github.com/jesseduffield/lazygit) Git TUI の設定（`lg` で起動） |
 | `.pre-commit-config.yaml` | [pre-commit](https://pre-commit.com/) フック定義（シークレット検出・基本チェック・shell lint） |
@@ -214,8 +214,10 @@ chmod +x setup.sh
 「よく使うが覚えきれない」コマンドや、`<param>` で一部だけ差し替えて使いたいコマンドを登録・呼び出す仕組み。
 
 - **呼び出し**: `Ctrl+G` で fzf 検索が開き、選んだコマンドが**実行されずプロンプトに挿入**される。そのまま編集して Enter で実行できる（「少し変更して使う」用途）。
+- **コマンド先頭表示**: pet の既定では各行が `[説明]: コマンド …` と説明が左にくるため、長い説明があるとコマンドが画面右端で見切れる。`select.sh` は**表示だけコマンドを行頭へ並べ替える**（`コマンド #tags  [説明]`）ので、コマンドが常に視認できる。pet へ返す行は元のまま温存するため選択結果は正しく解決される。
 - **色分け**: 一覧は主タグ（タグの先頭）ごとに色分けされる。`git`=緑 / `docker`=青 / `ssh`=黄 / `network`=シアン / `search`=ピンク / `terminal-manager`・`setup`=紫 / その他=グレー。
 - **カテゴリ絞り込み**: fzf 表示中に `F1`=全件 / `F2`=git / `F3`=docker / `F4`=ssh / `F5`=network / `F6`=search でカテゴリを切り替えられる（クエリを `'#<tag>` に差し替える方式）。タグ文字をそのまま入力しても絞り込める。
+- **プレビュー**: 一覧下部に選択中スニペットのコマンド全文・説明・タグが折り返し表示される（行頭表示でも切れるほど長いコマンドの全体確認用）。`Ctrl+P` で表示/非表示を切り替え。
 - **登録**: `pn`（`pet new`）で対話的に追加。直前に実行したコマンドをそのまま登録するなら `prev`（タグも付けるなら `prev -t`）。`prev` は `.zshrc` 定義のシェル関数で、履歴から直近の実コマンドを取り出して `pet new` に渡す（`pet new` 単体では Command 欄が自動で埋まらないため）。
 - **編集**: `pe`（`pet edit`）で `snippet.toml` をエディタで直接編集。
 - **パラメータ**: `command` 内に `<param>` や `<param=default>` を書くとプレースホルダになる。挿入後にプロンプト上で値を埋める。
