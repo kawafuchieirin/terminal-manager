@@ -205,9 +205,29 @@ chmod +x setup.sh
 | `FZF_CTRL_T_OPTS` | `--preview 'bat ...'` | `Ctrl+T` 時のシンタックスハイライト付きプレビュー |
 | `BAT_THEME` | `TwoDark` | bat の配色（Tokyo Night と相性◎） |
 
-### hidden/ ディレクトリ
+### hidden/ ディレクトリ（会社 / 個人の使い分け）
 
-`~/.config/zsh/hidden/` に `.zsh` ファイルを置くと自動的に読み込まれる。API キーや PC 固有の PATH 設定など、Git 管理に含めたくない設定用。
+`~/.config/zsh/hidden/` に `.zsh` ファイルを置くと自動的に読み込まれる。API キーや PC 固有の PATH 設定など、Git 管理に含めたくない設定用。`hidden/*` は `.gitignore` 済みのため **`git push` されない／`git pull` で消えない**ので、会社Mac・個人Macそれぞれが自分用の中身を持つことで使い分ける（リポジトリ本体は両Mac共通）。
+
+| ファイル | 用途 | Git |
+|----------|------|-----|
+| `secrets.zsh` | シークレット（トークン・APIキー） | 除外 |
+| `env.zsh` | 非秘匿のマシン固有設定（PATH・会社用エイリアス等） | 除外 |
+| `*.example` | 上記の雛形（ダミー値のみ追跡） | 追跡 |
+
+新しいMacでは雛形をコピーして実値を埋める:
+
+```bash
+cd ~/.config/zsh/hidden
+cp secrets.zsh.example secrets.zsh   # 会社Mac=会社用 / 個人Mac=個人用の値
+cp env.zsh.example    env.zsh
+```
+
+git のメール・名前は `hidden/` ではなく `~/.gitconfig`（リポジトリ外・マシンローカル）で各Mac一度だけ設定する:
+
+```bash
+git config --global user.email "you@example.com"   # 会社Macは会社メール
+```
 
 ### コマンドスニペット（pet）
 
