@@ -86,6 +86,8 @@ config.keys = {
   { key = "d", mods = "CMD|SHIFT", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
   { key = "[", mods = "CMD", action = wezterm.action.ActivatePaneDirection("Prev") },
   { key = "]", mods = "CMD", action = wezterm.action.ActivatePaneDirection("Next") },
+  { key = "r", mods = "CMD|SHIFT", action = wezterm.action.RotatePanes("Clockwise") },
+  { key = "s", mods = "CMD|SHIFT", action = wezterm.action.PaneSelect({ mode = "SwapWithActive" }) },
   {
     key = "k",
     mods = "CMD",

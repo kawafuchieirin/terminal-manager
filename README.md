@@ -42,7 +42,7 @@ chmod +x setup.sh
 | `wezterm/wezterm.lua` | [WezTerm](https://wezfurlong.org/wezterm/) ターミナルエミュレータの設定 |
 | `wezterm/recommendations.md` | WezTerm のおすすめ設定リファレンス（採用候補のメモ） |
 | `starship/starship.toml` | [Starship](https://starship.rs/) プロンプトの設定 |
-| `zsh/.zshrc` | Zsh のメイン設定（プラグイン読み込み・キーバインド・fzf×fd×bat 連携） |
+| `zsh/.zshrc` | Zsh のメイン設定（プラグイン読み込み・キーバインド・fzf×fd×bat 連携・fzf ディレクトリ移動） |
 | `zsh/aliases.zsh` | シェルエイリアス定義 |
 | `zsh/hidden/` | 環境固有の設定（Git 管理外、`.zsh` ファイルを自動読み込み） |
 | `pet/snippet.toml` | [pet](https://github.com/knqyf263/pet) コマンドスニペット集（`Ctrl+G` で呼び出し） |
@@ -91,6 +91,8 @@ chmod +x setup.sh
 | `Cmd+1`〜`Cmd+3` | タブ切り替え |
 | `Cmd+D` / `Cmd+Shift+D` | 横分割 / 縦分割 |
 | `Cmd+[` / `Cmd+]` | ペイン移動 |
+| `Cmd+Shift+R` | ペイン配置を時計回りに入れ替え |
+| `Cmd+Shift+S` | 選択したペインと現在のペインを入れ替え |
 | `Cmd+K` | 画面・スクロールバッククリア |
 | `Ctrl+Shift+O` | 背景透過のオン/オフをトグル（`window_background_opacity` の設定値 ⇔ `1.0`） |
 | `Cmd+Shift++` | 透明度を上げる（より不透明に、`+0.05`、最大 `1.0`） |
@@ -106,8 +108,8 @@ chmod +x setup.sh
 |--------|------|------|
 | [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) | Fish 風の自動補完 | `setup.sh` で導入 |
 | [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) | Fish 風のシンタックスハイライト | `setup.sh` で導入 |
-| [fzf](https://github.com/junegunn/fzf) | 曖昧検索（履歴・ファイル・ディレクトリ） | Tokyo Night 配色＋ボーダー＋reverse layout |
-| [fd](https://github.com/sharkdp/fd) | `find` の高速代替 | `FZF_DEFAULT_COMMAND` / `FZF_ALT_C_COMMAND` のバックエンドとして連携、`.gitignore` を尊重 |
+| [fzf](https://github.com/junegunn/fzf) | 曖昧検索（履歴・ファイル・ディレクトリ） | Tokyo Night 配色＋ボーダー＋reverse layout。`cdf_find` / `cdf_fd` で選択したディレクトリへ `cd` |
+| [fd](https://github.com/sharkdp/fd) | `find` の高速代替 | `FZF_DEFAULT_COMMAND` / `FZF_ALT_C_COMMAND` / `cdf_fd` のバックエンドとして連携、`.gitignore` を尊重 |
 | [ripgrep](https://github.com/BurntSushi/ripgrep) (`rg`) | `grep` の高速代替 | デフォルトで `.gitignore` を尊重しサブディレクトリを再帰検索 |
 | [bat](https://github.com/sharkdp/bat) | `cat` の代替（ハイライト+Git diff） | fzf の `Ctrl+T` プレビューで使用、`BAT_THEME=TwoDark` |
 | [pet](https://github.com/knqyf263/pet) | コマンドスニペット管理 | `Ctrl+G` で fzf 検索 → プロンプトに挿入。スニペットは `pet/snippet.toml` で Git 管理 |
@@ -126,6 +128,7 @@ chmod +x setup.sh
 | `Ctrl+R` | fzf でコマンド履歴を曖昧検索 |
 | `Ctrl+T` | fzf でカレント配下のファイルを曖昧検索して挿入 |
 | `Alt+C` | fzf でカレント配下のディレクトリを曖昧検索して `cd` |
+| `Ctrl+O` | fzf でカレント配下のディレクトリを検索し、選択した場所へ `cd`（fd があれば高速版、なければ find 版） |
 | `Ctrl+G` | pet スニペットを fzf 検索し、選んだコマンドをプロンプトに挿入（少し変更して実行できる） |
 | `**` + `Tab` | fzf 補完（パス・プロセス等を曖昧検索） |
 
@@ -204,6 +207,10 @@ chmod +x setup.sh
 | `FZF_ALT_C_COMMAND` | `fd --type d --hidden --follow --exclude .git` | fd によるディレクトリ検索 |
 | `FZF_CTRL_T_OPTS` | `--preview 'bat ...'` | `Ctrl+T` 時のシンタックスハイライト付きプレビュー |
 | `BAT_THEME` | `TwoDark` | bat の配色（Tokyo Night と相性◎） |
+
+### fzf ディレクトリ移動
+
+カレントディレクトリ配下のフォルダを fzf で絞り込み、選択したフォルダへ移動する関数を定義している。`cdf_find` は標準の `find` 版、`cdf_fd` は `fd` を使う高速版。`Ctrl+O` は `fd` があれば `cdf_fd`、なければ `cdf_find` を実行する。`Ctrl+G` は pet 用に使っているため、ディレクトリ移動は `Ctrl+O` に割り当てている。
 
 ### hidden/ ディレクトリ（会社 / 個人の使い分け）
 

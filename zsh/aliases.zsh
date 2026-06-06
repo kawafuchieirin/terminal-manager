@@ -42,3 +42,7 @@ alias pe='pet edit'
 
 ##### Claude #####
 alias cc='claude --dangerously-skip-permissions'
+
+##### aws cli #####
+alias sso='aws sso login --profile management-account'
+alias wssso='aws sso login --profile workload-account'

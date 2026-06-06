@@ -74,6 +74,38 @@ if command -v bat &>/dev/null; then
   export BAT_THEME="TwoDark"
 fi
 
+#### fzf directory jumper: search directories and cd to the selected one
+function cdf_find() {
+  local dir
+  dir=$(find . -type d -not -path '*/.git/*' 2>/dev/null | fzf --prompt='cd> ')
+
+  if [[ -n "$dir" ]]; then
+    builtin cd -- "$dir"
+  fi
+}
+
+function cdf_fd() {
+  local dir
+  dir=$(fd . --type d --hidden --exclude .git 2>/dev/null | fzf --prompt='cd> ')
+
+  if [[ -n "$dir" ]]; then
+    builtin cd -- "$dir"
+  fi
+}
+
+function fzf-cd-widget() {
+  if command -v fd &>/dev/null; then
+    cdf_fd
+  else
+    cdf_find
+  fi
+
+  zle reset-prompt
+}
+
+zle -N fzf-cd-widget
+bindkey '^O' fzf-cd-widget
+
 #### pet (snippet manager): Ctrl+G で登録済みスニペットを fzf 検索し、
 #### 選んだコマンドを実行せずプロンプトに挿入する（少し変更して Enter）
 if command -v pet &>/dev/null; then
