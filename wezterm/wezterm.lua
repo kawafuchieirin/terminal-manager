@@ -58,6 +58,7 @@ config.show_new_tab_button_in_tab_bar = false
 -- ペイン
 -- =========================
 config.inactive_pane_hsb = { saturation = 0.9, brightness = 0.7 }
+config.colors = { split = "#7aa2f7" }
 
 -- =========================
 -- 挙動
@@ -86,6 +87,15 @@ config.keys = {
   { key = "d", mods = "CMD|SHIFT", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
   { key = "[", mods = "CMD", action = wezterm.action.ActivatePaneDirection("Prev") },
   { key = "]", mods = "CMD", action = wezterm.action.ActivatePaneDirection("Next") },
+  { key = "LeftArrow", mods = "CMD|ALT", action = wezterm.action.ActivatePaneDirection("Left") },
+  { key = "RightArrow", mods = "CMD|ALT", action = wezterm.action.ActivatePaneDirection("Right") },
+  { key = "UpArrow", mods = "CMD|ALT", action = wezterm.action.ActivatePaneDirection("Up") },
+  { key = "DownArrow", mods = "CMD|ALT", action = wezterm.action.ActivatePaneDirection("Down") },
+  { key = "LeftArrow", mods = "CMD|CTRL", action = wezterm.action.AdjustPaneSize({ "Left", 1 }) },
+  { key = "RightArrow", mods = "CMD|CTRL", action = wezterm.action.AdjustPaneSize({ "Right", 1 }) },
+  { key = "UpArrow", mods = "CMD|CTRL", action = wezterm.action.AdjustPaneSize({ "Up", 1 }) },
+  { key = "DownArrow", mods = "CMD|CTRL", action = wezterm.action.AdjustPaneSize({ "Down", 1 }) },
+  { key = "Enter", mods = "CMD|SHIFT", action = wezterm.action.TogglePaneZoomState },
   { key = "r", mods = "CMD|SHIFT", action = wezterm.action.RotatePanes("Clockwise") },
   { key = "s", mods = "CMD|SHIFT", action = wezterm.action.PaneSelect({ mode = "SwapWithActive" }) },
   {
