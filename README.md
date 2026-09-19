@@ -75,15 +75,28 @@ chmod +x setup.sh
 | | `tab_bar_at_bottom` | `true` | 下部配置 |
 | | `hide_tab_bar_if_only_one_tab` | `true` | タブ1つなら非表示 |
 | | `show_new_tab_button_in_tab_bar` | `false` | 新規タブ＋ボタンを非表示 |
+| | `format-tab-title` | アクティブ: 金色 / 非アクティブ: 暗青色 | ペインのタイトルを表示幅に合わせて省略 |
 | ペイン | `inactive_pane_hsb` | sat 0.9 / br 0.7 | 非アクティブを暗く |
 | 挙動 | `window_close_confirmation` | `NeverPrompt` | クローズ確認なし |
 | | `scrollback_lines` | 10000 | |
 | | `use_ime` | `true` | macOS IME（ことえり等）対応 |
+| | `automatically_reload_config` | `true` | 設定保存時の自動リロードを明示的に有効化 |
 | 性能 | `front_end` | `WebGpu` | GPU レンダリング |
 | | `max_fps` | 120 | |
 | | `check_for_updates` | `false` | 自動更新チェックを無効化 |
 
 ### キーバインド (macOS)
+
+`Leader` は `Ctrl+Q`。押してから2秒以内に次のキーを入力する。
+
+| キー | 動作 |
+|------|------|
+| `Leader` → `w` | ワークスペース一覧を開く |
+| `Leader` → `[` | コピーモードに入る |
+| `Leader` → `d` / `r` | 上下 / 左右にペインを分割 |
+| `Leader` → `x` | 確認付きで現在のペインを閉じる |
+| `Leader` → `h` / `j` / `k` / `l` | 左 / 下 / 上 / 右のペインへ移動 |
+| `Leader` → `z` | ペインの最大化 / 解除 |
 
 | キー | 動作 |
 |------|------|

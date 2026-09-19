@@ -1,6 +1,8 @@
 local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
+config.automatically_reload_config = true
+
 -- =========================
 -- フォント
 -- =========================
@@ -54,6 +56,18 @@ config.hide_tab_bar_if_only_one_tab = true
 config.tab_bar_at_bottom = true
 config.show_new_tab_button_in_tab_bar = false
 
+wezterm.on("format-tab-title", function(tab, _, _, _, _, max_width)
+  local background = tab.is_active and "#e0af68" or "#3b4261"
+  local foreground = tab.is_active and "#1a1b26" or "#c0caf5"
+  local title = wezterm.truncate_right(tab.active_pane.title, max_width - 2)
+
+  return {
+    { Background = { Color = background } },
+    { Foreground = { Color = foreground } },
+    { Text = " " .. title .. " " },
+  }
+end)
+
 -- =========================
 -- ペイン
 -- =========================
@@ -77,7 +91,18 @@ config.check_for_updates = false
 -- =========================
 -- キーバインド (macOS)
 -- =========================
+config.leader = { key = "q", mods = "CTRL", timeout_milliseconds = 2000 }
 config.keys = {
+  { key = "w", mods = "LEADER", action = wezterm.action.ShowLauncherArgs({ flags = "WORKSPACES" }) },
+  { key = "[", mods = "LEADER", action = wezterm.action.ActivateCopyMode },
+  { key = "d", mods = "LEADER", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
+  { key = "r", mods = "LEADER", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
+  { key = "x", mods = "LEADER", action = wezterm.action.CloseCurrentPane({ confirm = true }) },
+  { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Left") },
+  { key = "j", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Down") },
+  { key = "k", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Up") },
+  { key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Right") },
+  { key = "z", mods = "LEADER", action = wezterm.action.TogglePaneZoomState },
   { key = "t", mods = "CMD", action = wezterm.action.SpawnTab("CurrentPaneDomain") },
   { key = "w", mods = "CMD", action = wezterm.action.CloseCurrentPane({ confirm = false }) },
   { key = "1", mods = "CMD", action = wezterm.action.ActivateTab(0) },
