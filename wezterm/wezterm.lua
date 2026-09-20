@@ -91,41 +91,40 @@ config.check_for_updates = false
 -- =========================
 -- キーバインド (macOS)
 -- =========================
-config.leader = { key = "q", mods = "CTRL", timeout_milliseconds = 2000 }
+config.leader = { key = "q", mods = "CTRL", timeout_milliseconds = 2000 } -- kb: Leader：続けて次のキーを入力
 config.keys = {
-  { key = "w", mods = "LEADER", action = wezterm.action.ShowLauncherArgs({ flags = "WORKSPACES" }) },
-  { key = "[", mods = "LEADER", action = wezterm.action.ActivateCopyMode },
-  { key = "d", mods = "LEADER", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
-  { key = "r", mods = "LEADER", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
-  { key = "x", mods = "LEADER", action = wezterm.action.CloseCurrentPane({ confirm = true }) },
-  { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Left") },
-  { key = "j", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Down") },
-  { key = "k", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Up") },
-  { key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Right") },
-  { key = "z", mods = "LEADER", action = wezterm.action.TogglePaneZoomState },
-  { key = "t", mods = "CMD", action = wezterm.action.SpawnTab("CurrentPaneDomain") },
-  { key = "w", mods = "CMD", action = wezterm.action.CloseCurrentPane({ confirm = false }) },
-  { key = "1", mods = "CMD", action = wezterm.action.ActivateTab(0) },
-  { key = "2", mods = "CMD", action = wezterm.action.ActivateTab(1) },
-  { key = "3", mods = "CMD", action = wezterm.action.ActivateTab(2) },
-  { key = "d", mods = "CMD", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
-  { key = "d", mods = "CMD|SHIFT", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
-  { key = "[", mods = "CMD", action = wezterm.action.ActivatePaneDirection("Prev") },
-  { key = "]", mods = "CMD", action = wezterm.action.ActivatePaneDirection("Next") },
-  { key = "LeftArrow", mods = "CMD|ALT", action = wezterm.action.ActivatePaneDirection("Left") },
-  { key = "RightArrow", mods = "CMD|ALT", action = wezterm.action.ActivatePaneDirection("Right") },
-  { key = "UpArrow", mods = "CMD|ALT", action = wezterm.action.ActivatePaneDirection("Up") },
-  { key = "DownArrow", mods = "CMD|ALT", action = wezterm.action.ActivatePaneDirection("Down") },
-  { key = "LeftArrow", mods = "CMD|CTRL", action = wezterm.action.AdjustPaneSize({ "Left", 1 }) },
-  { key = "RightArrow", mods = "CMD|CTRL", action = wezterm.action.AdjustPaneSize({ "Right", 1 }) },
-  { key = "UpArrow", mods = "CMD|CTRL", action = wezterm.action.AdjustPaneSize({ "Up", 1 }) },
-  { key = "DownArrow", mods = "CMD|CTRL", action = wezterm.action.AdjustPaneSize({ "Down", 1 }) },
-  { key = "Enter", mods = "CMD|SHIFT", action = wezterm.action.TogglePaneZoomState },
-  { key = "r", mods = "CMD|SHIFT", action = wezterm.action.RotatePanes("Clockwise") },
-  { key = "s", mods = "CMD|SHIFT", action = wezterm.action.PaneSelect({ mode = "SwapWithActive" }) },
+  { key = "w", mods = "LEADER", action = wezterm.action.ShowLauncherArgs({ flags = "WORKSPACES" }) }, -- kb: ワークスペース一覧
+  { key = "[", mods = "LEADER", action = wezterm.action.ActivateCopyMode }, -- kb: コピーモード
+  { key = "d", mods = "LEADER", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) }, -- kb: 上下にペイン分割
+  { key = "r", mods = "LEADER", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) }, -- kb: 左右にペイン分割
+  { key = "x", mods = "LEADER", action = wezterm.action.CloseCurrentPane({ confirm = true }) }, -- kb: 確認付きでペインを閉じる
+  { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Left") }, -- kb: 左のペインへ移動
+  { key = "j", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Down") }, -- kb: 下のペインへ移動
+  { key = "k", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Up") }, -- kb: 上のペインへ移動
+  { key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Right") }, -- kb: 右のペインへ移動
+  { key = "z", mods = "LEADER", action = wezterm.action.TogglePaneZoomState }, -- kb: ペイン最大化 / 解除
+  { key = "t", mods = "CMD", action = wezterm.action.SpawnTab("CurrentPaneDomain") }, -- kb: 新規タブ
+  { key = "w", mods = "CMD", action = wezterm.action.CloseCurrentPane({ confirm = false }) }, -- kb: 確認なしで現在のペインを閉じる
+  { key = "1", mods = "CMD", action = wezterm.action.ActivateTab(0) }, -- kb: 1番目のタブへ移動
+  { key = "2", mods = "CMD", action = wezterm.action.ActivateTab(1) }, -- kb: 2番目のタブへ移動
+  { key = "3", mods = "CMD", action = wezterm.action.ActivateTab(2) }, -- kb: 3番目のタブへ移動
+  { key = "d", mods = "CMD", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) }, -- kb: 左右にペイン分割
+  { key = "d", mods = "CMD|SHIFT", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) }, -- kb: 上下にペイン分割
+  { key = "[", mods = "CMD", action = wezterm.action.ActivatePaneDirection("Prev") }, -- kb: 前のペインへ移動
+  { key = "]", mods = "CMD", action = wezterm.action.ActivatePaneDirection("Next") }, -- kb: 次のペインへ移動
+  { key = "LeftArrow", mods = "CMD|ALT", action = wezterm.action.ActivatePaneDirection("Left") }, -- kb: 左のペインへ移動
+  { key = "RightArrow", mods = "CMD|ALT", action = wezterm.action.ActivatePaneDirection("Right") }, -- kb: 右のペインへ移動
+  { key = "UpArrow", mods = "CMD|ALT", action = wezterm.action.ActivatePaneDirection("Up") }, -- kb: 上のペインへ移動
+  { key = "DownArrow", mods = "CMD|ALT", action = wezterm.action.ActivatePaneDirection("Down") }, -- kb: 下のペインへ移動
+  { key = "LeftArrow", mods = "CMD|CTRL", action = wezterm.action.AdjustPaneSize({ "Left", 1 }) }, -- kb: ペイン境界を左へ1セル移動
+  { key = "RightArrow", mods = "CMD|CTRL", action = wezterm.action.AdjustPaneSize({ "Right", 1 }) }, -- kb: ペイン境界を右へ1セル移動
+  { key = "UpArrow", mods = "CMD|CTRL", action = wezterm.action.AdjustPaneSize({ "Up", 1 }) }, -- kb: ペイン境界を上へ1セル移動
+  { key = "DownArrow", mods = "CMD|CTRL", action = wezterm.action.AdjustPaneSize({ "Down", 1 }) }, -- kb: ペイン境界を下へ1セル移動
+  { key = "Enter", mods = "CMD|SHIFT", action = wezterm.action.TogglePaneZoomState }, -- kb: ペイン最大化 / 解除
+  { key = "r", mods = "CMD|SHIFT", action = wezterm.action.RotatePanes("Clockwise") }, -- kb: ペイン配置を時計回りに入れ替え
+  { key = "s", mods = "CMD|SHIFT", action = wezterm.action.PaneSelect({ mode = "SwapWithActive" }) }, -- kb: 選択したペインと現在のペインを入れ替え
   {
-    key = "k",
-    mods = "CMD",
+    key = "k", mods = "CMD", -- kb: 画面・スクロールバックをクリア
     action = wezterm.action.Multiple({
       wezterm.action.ClearScrollback("ScrollbackAndViewport"),
       wezterm.action.SendKey({ key = "L", mods = "CTRL" }),
@@ -134,8 +133,7 @@ config.keys = {
 
   -- 透過トグル (設定ファイル値 <-> 1.0)
   {
-    key = "o",
-    mods = "CTRL|SHIFT",
+    key = "o", mods = "CTRL|SHIFT", -- kb: 背景透過のオン / オフ
     action = wezterm.action_callback(function(window, _)
       local overrides = window:get_config_overrides() or {}
       if overrides.window_background_opacity == 1.0 then
@@ -150,8 +148,7 @@ config.keys = {
   },
   -- 透明度を上げる (より不透明に)
   {
-    key = "=",
-    mods = "CMD|SHIFT",
+    key = "=", mods = "CMD|SHIFT", -- kb: 不透明度を0.05上げる（最大1.0）
     action = wezterm.action_callback(function(window, _)
       local overrides = window:get_config_overrides() or {}
       local current = overrides.window_background_opacity or config.window_background_opacity
@@ -163,8 +160,7 @@ config.keys = {
   },
   -- 透明度を下げる (より透ける)
   {
-    key = "-",
-    mods = "CMD|SHIFT",
+    key = "-", mods = "CMD|SHIFT", -- kb: 不透明度を0.05下げる（最小0.0）
     action = wezterm.action_callback(function(window, _)
       local overrides = window:get_config_overrides() or {}
       local current = overrides.window_background_opacity or config.window_background_opacity

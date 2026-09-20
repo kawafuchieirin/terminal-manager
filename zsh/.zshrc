@@ -24,8 +24,8 @@ setopt HIST_VERIFY            # 履歴展開（!）は即実行せずプロン�
 autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
-bindkey "^[[A" up-line-or-beginning-search
-bindkey "^[[B" down-line-or-beginning-search
+bindkey "^[[A" up-line-or-beginning-search # kb: 入力にマッチする前の履歴
+bindkey "^[[B" down-line-or-beginning-search # kb: 入力にマッチする次の履歴
 
 #### Make word deletion stop at path separators, etc.
 WORDCHARS=''
@@ -42,6 +42,7 @@ fi
 
 #### Aliases
 source "$HOME/.config/zsh/aliases.zsh"
+source "$HOME/.config/zsh/keybindings.zsh"
 
 #### PATH / Tools
 eval "$(mise activate zsh)"
@@ -104,7 +105,7 @@ function fzf-cd-widget() {
 }
 
 zle -N fzf-cd-widget
-bindkey '^O' fzf-cd-widget
+bindkey '^O' fzf-cd-widget # kb: ディレクトリをfzf検索して移動
 
 #### pet (snippet manager): Ctrl+G で登録済みスニペットを fzf 検索し、
 #### 選んだコマンドを実行せずプロンプトに挿入する（少し変更して Enter）
@@ -115,7 +116,7 @@ if command -v pet &>/dev/null; then
     zle redisplay
   }
   zle -N pet-select
-  bindkey '^g' pet-select
+  bindkey '^g' pet-select # kb: petスニペットを検索してプロンプトへ挿入（pet導入時）
 
   # prev: 直前に実行したコマンドを pet new に渡して登録する
   #       （pet new は Command 欄を自動で埋めないため、履歴から取り出して渡す）

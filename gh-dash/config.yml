@@ -19,12 +19,12 @@ repoPaths:
 keybindings:
   universal:
     # 選択行ではなく gh-dash を起動したディレクトリのリポジトリを操作する。
-    - key: N
+    - key: N # kb: 起動ディレクトリのリポジトリにIssueを作成
       name: Create issue (current directory)
       command: gh issue create
-    - key: P
+    - key: P # kb: 起動ディレクトリのリポジトリにPRを作成
       name: Create PR (current directory)
       command: gh pr create
-    - key: G
+    - key: G # kb: 起動ディレクトリでlazygitを開く
       name: Lazygit (current directory)
       command: lazygit

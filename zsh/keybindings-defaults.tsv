@@ -1,0 +1,17 @@
+ツール	キー	説明	設定元
+Zsh / fzf	Ctrl+R	コマンド履歴を検索	fzf既定（zsh/.zshrc で読み込み）
+Zsh / fzf	Ctrl+T	ファイルを検索して挿入	fzf既定（zsh/.zshrc で読み込み）
+Zsh / fzf	Alt+C	ディレクトリを検索して移動	fzf既定（zsh/.zshrc で読み込み）
+Zsh / fzf	** → Tab	パス・プロセス等の曖昧補完	fzf既定（zsh/.zshrc で読み込み）
+gh-dash	?	現在のバージョンのキー一覧	既定（gh-dash/README.md、実機の ? で確認）
+gh-dash	s	PR / Issue表示を切り替え	既定（gh-dash/README.md、実機の ? で確認）
+gh-dash	q	終了	既定（gh-dash/README.md、実機の ? で確認）
+lazygit	?	現在の画面のキー一覧	既定（README.md、実機の ? で確認）
+lazygit	Space	ステージ / 解除（ファイル画面）	既定（README.md、実機の ? で確認）
+lazygit	a	全ファイルをステージ / 解除	既定（README.md、実機の ? で確認）
+lazygit	c	コミット	既定（README.md、実機の ? で確認）
+lazygit	C	Amend	既定（README.md、実機の ? で確認）
+lazygit	p	push	既定（README.md、実機の ? で確認）
+lazygit	P	pull	既定（README.md、実機の ? で確認）
+lazygit	n	ブランチ作成（ブランチ画面）	既定（README.md、実機の ? で確認）
+lazygit	z	アンドゥ	既定（README.md、実機の ? で確認）

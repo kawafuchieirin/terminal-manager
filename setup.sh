@@ -40,6 +40,7 @@ install_brew_packages() {
 
   # formula
   local packages=(
+    python
     starship
     zsh-autosuggestions
     zsh-syntax-highlighting
