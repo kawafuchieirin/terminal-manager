@@ -29,6 +29,9 @@ macOS 開発環境のターミナル一式（**WezTerm + Zsh + Starship**）の�
 
 `setup.sh` は関数単位で分割（`install_brew_packages` / `setup_wezterm` / `setup_starship` / `setup_zsh`）。新ツール追加時は同パターンで関数を足し `main` から呼び出す。
 
-## README 自動更新
+## ドキュメント構成と自動更新
 
-設定ファイルや `setup.sh` を変更したら `.claude/rules/update-readme.md` の規約に従い `README.md` を実態と一致させる。エイリアス表は `zsh/aliases.zsh` から生成し、推測で項目を増やさない。
+- ルートの `README.md` は**索引**（概要・クイックスタート・ドキュメント索引・ファイル構成・`setup.sh` の処理・pre-commit・リリース・設計方針）。
+- 各ツールの詳細は**そのディレクトリの `README.md`**（`wezterm/` `zsh/` `zsh/hidden/` `starship/` `pet/` `lazygit/` `gh-dash/`）。同じ表をルートと重複管理しない。
+
+設定ファイルや `setup.sh` を変更したら `.claude/rules/update-readme.md` の規約に従い、該当ディレクトリの README（必要ならルートの索引も）を実態と一致させる。エイリアス表は `zsh/aliases.zsh` から生成し、推測で項目を増やさない。
