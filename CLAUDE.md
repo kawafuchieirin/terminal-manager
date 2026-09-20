@@ -27,7 +27,7 @@ macOS 開発環境のターミナル一式（**WezTerm + Zsh + Starship**）の�
 ./setup.sh
 ```
 
-`setup.sh` は関数単位で分割（`install_brew_packages` / `setup_wezterm` / `setup_starship` / `setup_zsh`）。新ツール追加時は同パターンで関数を足し `main` から呼び出す。
+`setup.sh` は関数単位で分割（`install_brew_packages` / `setup_wezterm` / `setup_starship` / `setup_zsh` / `setup_pet` / `setup_lazygit` / `setup_pre_commit`）。新ツール追加時は同パターンで関数を足し `main` から呼び出す。
 
 ## ドキュメント構成と自動更新
 
