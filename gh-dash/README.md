@@ -1,7 +1,9 @@
-# GitHub をターミナルで操作する
+# gh-dash — GitHub をターミナルで操作する
 
-GitHub の Issue・PR は [gh-dash](https://www.gh-dash.dev/)、ローカルの Git 操作は既存の lazygit を使う。
-Issue / PR の作成は gh-dash から GitHub CLI の対話入力を開く。
+GitHub の Issue・PR は [gh-dash](https://www.gh-dash.dev/)、ローカルの Git 操作は既存の
+[lazygit](../lazygit/README.md) を使う。Issue / PR の作成は gh-dash から GitHub CLI の対話入力を開く。
+
+実体は `gh-dash/config.yml`。**`setup.sh` の対象外**なので、導入とリンク作成は下記の手順で手動で行う。
 
 ## 導入
 
@@ -57,5 +59,23 @@ PR の差分・コメント・レビュー・マージは `?` に表示される
 ブランチ作成前に `git status` で作業状態を確認する。
 `repoPaths` は `kawafuchieirin/*` を `~/work-space/*` に対応させている。
 別の場所の clone を gh-dash から checkout する場合は設定を調整する。
+
+## config.yml の内容
+
+| 項目 | 設定 |
+|------|------|
+| `prSections` | `My PRs`（`is:open author:@me`）/ `Review requested`（`is:open review-requested:@me`）/ `Involved`（`is:open involves:@me`） |
+| `issuesSections` | `My Issues`（`is:open author:@me`）/ `Assigned`（`is:open assignee:@me`） |
+| `repoPaths` | `kawafuchieirin/*` → `~/work-space/*`。clone をこの配置以外に置く場合は書き換える |
+| `keybindings.universal` | `N`（`gh issue create`）/ `P`（`gh pr create`）/ `G`（`lazygit`）。いずれも**起動ディレクトリ**で実行する |
+
+キー定義の行末に付けている `# kb:` コメントは `kb` コマンドの一覧に取り込まれる
+（[zsh/README.md](../zsh/README.md#キーバインドの横断検索)）。キーを追加・変更したら同じ行の説明も更新する。
+
+```yaml
+- key: N # kb: 起動ディレクトリのリポジトリにIssueを作成
+  name: Create issue (current directory)
+  command: gh issue create
+```
 
 設定仕様: [キーの追加](https://www.gh-dash.dev/configuration/keybindings/) / [clone の場所](https://www.gh-dash.dev/configuration/repo-paths/)。
