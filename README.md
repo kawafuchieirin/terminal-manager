@@ -23,7 +23,7 @@ chmod +x setup.sh
 
 1. Homebrew パッケージのインストール
    - cask: `wezterm@nightly`（nightly ビルド = 事実上のメイン）, `font-plemol-jp-nf`（PlemolJP Console NF / 透過背景でも最高クラスの視認性, Nerd Font 内蔵）, `font-udev-gothic`（UD系フォールバック）, `font-hackgen-nerd`（Nerd Font アイコン用フォールバック）
-   - formula: `starship`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `fzf`, `fd`, `ripgrep`, `bat`, `pet`, `lazygit`, `pre-commit`, `gitleaks`, `shellcheck`
+   - formula: `python`, `starship`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `fzf`, `fd`, `ripgrep`, `bat`, `pet`, `lazygit`, `pre-commit`, `gitleaks`, `shellcheck`
    - 既存の安定版 `wezterm` が入っている場合は自動で nightly に置き換え
 2. WezTerm 設定のシンボリックリンク作成（`~/.config/wezterm/`）
 3. Starship 設定のシンボリックリンク作成（`~/.config/starship.toml`）
@@ -43,6 +43,9 @@ chmod +x setup.sh
 | `wezterm/recommendations.md` | WezTerm のおすすめ設定リファレンス（採用候補のメモ） |
 | `starship/starship.toml` | [Starship](https://starship.rs/) プロンプトの設定 |
 | `zsh/.zshrc` | Zsh のメイン設定（プラグイン読み込み・キーバインド・fzf×fd×bat 連携・fzf ディレクトリ移動） |
+| `zsh/keybindings.zsh` | `kb` コマンド（キーバインドの一覧・横断検索） |
+| `zsh/keybindings.py` | 設定ファイルからキーバインド一覧を読み取る（Python 3.9 以上、標準ライブラリのみ） |
+| `zsh/keybindings-defaults.tsv` | 設定に書かれていない主要な既定キーの参照表 |
 | `zsh/aliases.zsh` | シェルエイリアス定義 |
 | `zsh/hidden/` | 環境固有の設定（Git 管理外、`.zsh` ファイルを自動読み込み） |
 | `pet/snippet.toml` | [pet](https://github.com/knqyf263/pet) コマンドスニペット集（`Ctrl+G` で呼び出し） |
@@ -144,6 +147,53 @@ chmod +x setup.sh
 | `Ctrl+O` | fzf でカレント配下のディレクトリを検索し、選択した場所へ `cd`（fd があれば高速版、なければ find 版） |
 | `Ctrl+G` | pet スニペットを fzf 検索し、選んだコマンドをプロンプトに挿入（少し変更して実行できる） |
 | `**` + `Tab` | fzf 補完（パス・プロセス等を曖昧検索） |
+
+### キーバインドの横断検索
+
+新しいシェルで `kb` を実行すると、WezTerm・Zsh/fzf・pet・gh-dash・lazygit のキーバインドを検索できる。
+既存のシェルには `source ~/.config/zsh/keybindings.zsh` で読み込む（セットアップ済みの場合）。
+
+```sh
+kb             # fzf でツール名・キー・説明・設定元を横断検索
+kb wezterm     # 初期検索語を指定
+kb ペイン      # 日本語でも検索
+kb --list      # 全件を表示（fzf 不要）
+```
+
+Enter は選択行を表示するだけで、記載された操作を実行しない。Esc / Ctrl+C で閉じる。
+fzf が未導入の場合は全件表示に切り替わる。
+
+`kb` の起動ごとにリポジトリの設定ファイルを読み取るため、キーの変更・削除は次に開いた一覧へ自動反映される。
+Python 3.9 以上が必要（`setup.sh` で導入。既存環境では `brew install python`）。生成ファイルの保存や同期コマンドは不要。
+
+- **WezTerm / Zsh / gh-dash**: キー定義と同じ行にある `kb:` コメントを読み取る。新規登録時も下記の形式で説明を添える。
+- **pet**: `pet/select.sh` の `--bind=` を読み取る（1行に1つのキーとアクション）。
+- **既定キー**: `zsh/keybindings-defaults.tsv` を参照する。これは手動管理で、ツール更新時には gh-dash / lazygit 内の `?` などで確認する。
+
+```lua
+-- WezTerm: key と mods は同じ行に文字列で指定
+{ key = "t", mods = "CMD", action = wezterm.action.SpawnTab("CurrentPaneDomain") }, -- kb: 新規タブ
+```
+
+```sh
+bindkey '^O' fzf-cd-widget # kb: ディレクトリを検索して移動
+```
+
+```yaml
+- key: N # kb: 起動ディレクトリのリポジトリにIssueを作成
+```
+
+同期は **設定ファイル → 一覧** の方向。動作を変更した場合は、同じ行の説明コメントも更新する。
+設定コードは実行せずに読み取るため、変数・ループによるキー定義や `hidden/` の上書き、実行中アプリの状態は対象外。
+一覧には参照元の行番号を表示する。注釈付きの行が対応形式から外れると、エラーを表示して終了する。
+`Leader` の実際のキーは WezTerm の行で確認できる。
+
+確認コマンド:
+
+```sh
+python3 -B zsh/test-keybindings.py
+zsh -f zsh/test-keybindings.zsh
+```
 
 ### 履歴（History）
 
