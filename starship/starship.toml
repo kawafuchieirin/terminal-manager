@@ -9,8 +9,6 @@ $docker_context$kubernetes$aws$gcloud\
 $line_break\
 $character"""
 
-right_format = """$cmd_duration$time"""
-
 add_newline = true
 
 # =========================
@@ -50,7 +48,7 @@ format = "[ $path]($style)[$read_only]($read_only_style) "
 # =========================
 [git_branch]
 symbol = " "
-format = "[on](bold purple) [$symbol$branch]($style) "
+format = "[$symbol$branch]($style) "
 style = "bold purple"
 
 [git_status]
@@ -74,37 +72,37 @@ style = "bold yellow"
 # =========================
 [nodejs]
 symbol = " "
-format = "[via](bold purple) [$symbol($version )]($style)"
+format = "[$symbol($version )]($style)"
 style = "bold green"
 
 [python]
 symbol = " "
-format = '[via](bold purple) [${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
 style = "bold yellow"
 
 [golang]
 symbol = " "
-format = "[via](bold purple) [$symbol($version )]($style)"
+format = "[$symbol($version )]($style)"
 style = "bold cyan"
 
 [rust]
 symbol = " "
-format = "[via](bold purple) [$symbol($version )]($style)"
+format = "[$symbol($version )]($style)"
 style = "bold red"
 
 [java]
 symbol = " "
-format = "[via](bold purple) [$symbol($version )]($style)"
+format = "[$symbol($version )]($style)"
 style = "bold red"
 
 [ruby]
 symbol = " "
-format = "[via](bold purple) [$symbol($version )]($style)"
+format = "[$symbol($version )]($style)"
 style = "bold red"
 
 [php]
 symbol = " "
-format = "[via](bold purple) [$symbol($version )]($style)"
+format = "[$symbol($version )]($style)"
 style = "bold blue"
 
 # =========================
@@ -112,35 +110,22 @@ style = "bold blue"
 # =========================
 [docker_context]
 symbol = " "
-format = "[on](bold purple) [$symbol$context]($style) "
+format = "[$symbol$context]($style) "
 style = "bold blue"
 only_with_files = true
 
 [kubernetes]
 symbol = "☸ "
-format = '[on](bold purple) [$symbol$context( \($namespace\))]($style) '
+format = '[$symbol$context( \($namespace\))]($style) '
 style = "bold cyan"
 disabled = false
 
 [aws]
 symbol = "  "
-format = '[on](bold purple) [$symbol($profile )(\($region\) )(\[$duration\] )]($style)'
+format = '[$symbol($profile )(\[$duration\] )]($style)'
 style = "bold yellow"
 
 [gcloud]
 symbol = " "
-format = '[on](bold purple) [$symbol$account(@$domain)(\($region\))]($style) '
+format = '[$symbol$account(@$domain)(\($region\))]($style) '
 style = "bold blue"
-
-# =========================
-# Right Prompt
-# =========================
-[cmd_duration]
-min_time = 500
-format = " [took $duration](bold yellow)"
-
-[time]
-disabled = false
-format = " [$time]($style)"
-time_format = "%H:%M:%S"
-style = "bold white"

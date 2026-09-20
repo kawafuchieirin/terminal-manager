@@ -5,14 +5,18 @@ source "${0:A:h}/keybindings.zsh"
 catalog=$(python3 "${0:A:h}/keybindings.py")
 
 [[ "$(kb --list)" == "$catalog" ]]
-print -r -- "$catalog" | awk -F '\t' 'NF != 4 { exit 1 }'
+# 列は空白で揃える（タブは端末ごとに幅が変わる）。
+[[ "$catalog" == ツール*キー*説明*設定元* && "$catalog" != *$'\t'* ]]
 
 # 呼び出し元のディレクトリに依存せず、日本語・キーでも検索できる。
 cd /tmp
 fzf() { command fzf "$@" --filter='WezTerm ペイン'; }
 [[ "$(kb)" == *WezTerm*ペイン* ]]
-fzf() { command fzf "$@" --filter='Ctrl+G'; }
-[[ "$(kb)" == *petスニペット* ]]
+# Mac の記号は入力しづらいため、キー名（Ctrl / Opt / Shift / Cmd）でも検索できる。
+for query in 'Ctrl+G' '⌃G'; do
+  fzf() { command fzf "$@" --filter="$query"; }
+  [[ "$(kb)" == *petスニペット* ]]
+done
 
 # 初期検索語はシェルコードとして実行せず、1つの引数として渡す。
 fzf() { [[ "$*" == *'--query=gh-dash Issue'* ]]; }

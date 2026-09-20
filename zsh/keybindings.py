@@ -4,7 +4,31 @@ import csv
 import re
 import shlex
 import sys
+import unicodedata
 from pathlib import Path
+
+COLUMN_GAP = 4
+
+WEZTERM_MODS = {"CTRL": "Ctrl", "ALT": "Alt", "OPT": "Alt",
+                "SHIFT": "Shift", "CMD": "Cmd", "SUPER": "Cmd"}
+# macOS のメニューと同じ並び（⌃⌥⇧⌘）。Alt は Mac のキートップに合わせて Opt と呼ぶ。
+MAC_MODS = {"Ctrl": ("⌃", "Ctrl"), "Alt": ("⌥", "Opt"),
+            "Shift": ("⇧", "Shift"), "Cmd": ("⌘", "Cmd")}
+MAC_KEYS = {"Enter": "↩", "Tab": "⇥"}
+
+
+def mac_key(key):
+    """Cmd+Shift+D → ⇧⌘D (Shift+Cmd+D)。記号は入力しづらいため、検索用に名前も残す。"""
+    symbols, names = [], []
+    for step in key.split(" → "):
+        match = re.fullmatch(rf"((?:(?:{'|'.join(MAC_MODS)})\+)*)(.+)", step)
+        if not match:
+            raise ValueError(f"キーが空です: {key!r}")
+        mods = [MAC_MODS[mod] for mod in MAC_MODS if mod + "+" in match[1]]
+        symbols.append("".join(symbol for symbol, _ in mods) + MAC_KEYS.get(match[2], match[2]))
+        names.append("+".join([name for _, name in mods] + [match[2]]))
+    symbols, names = " → ".join(symbols), " → ".join(names)
+    return symbols if symbols == names else f"{symbols} ({names})"
 
 
 def display_key(key):
@@ -18,6 +42,7 @@ def display_key(key):
 
 
 def annotated(root, tool, filename):
+    leader = None
     for number, line in enumerate((root / filename).read_text().splitlines(), 1):
         if line.lstrip().startswith(("#", "--")):
             continue
@@ -33,13 +58,17 @@ def annotated(root, tool, filename):
                 key = display_key(fields["key"])
                 mods = fields["mods"].split("|")
                 if "LEADER" in mods:
+                    if leader is None:
+                        raise ValueError("LEADER を使う行より前に config.leader の定義が必要です")
                     mods.remove("LEADER")
-                    prefix = "Leader → "
+                    prefix = leader + " → "
                 else:
                     prefix = ""
                     if len(key) == 1 and mods != ["NONE"]:
                         key = key.upper()
-                key = prefix + "+".join([m.title() for m in mods if m != "NONE"] + [key])
+                key = prefix + "+".join([WEZTERM_MODS[m] for m in mods if m != "NONE"] + [key])
+                if re.search(r"\bconfig\.leader\s*=", code):
+                    leader = key
             elif tool == "Zsh":
                 tokens = shlex.split(code)
                 if len(tokens) != 3 or tokens[0] != "bindkey":
@@ -84,7 +113,17 @@ def catalog(root):
         rows.extend(defaults)
     if any(len(row) != 4 or any("\n" in cell or "\t" in cell for cell in row) for row in rows):
         raise ValueError("キーバインド一覧はタブ・改行を含まない4列で指定してください")
-    return rows
+    return rows[:1] + [(tool, mac_key(key), note, source) for tool, key, note, source in rows[1:]]
+
+
+def table(rows):
+    """列の開始位置を揃える。全角は2桁、曖昧幅（→ や ⇧）は WezTerm 既定の1桁で数える。"""
+    def width(cell):
+        return sum(2 if unicodedata.east_asian_width(char) in "WF" else 1 for char in cell)
+
+    widths = [max(map(width, column)) + COLUMN_GAP for column in zip(*rows)]
+    return ["".join(cell + " " * (size - width(cell)) for cell, size in zip(row, widths)).rstrip()
+            for row in rows]
 
 
 if __name__ == "__main__":
@@ -92,4 +131,4 @@ if __name__ == "__main__":
         rows = catalog(Path(__file__).resolve().parent.parent)
     except (OSError, ValueError) as error:
         sys.exit(f"kb: {error}")
-    csv.writer(sys.stdout, delimiter="\t", lineterminator="\n").writerows(rows)
+    print("\n".join(table(rows)))

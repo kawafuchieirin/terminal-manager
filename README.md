@@ -186,7 +186,11 @@ bindkey '^O' fzf-cd-widget # kb: ディレクトリを検索して移動
 同期は **設定ファイル → 一覧** の方向。動作を変更した場合は、同じ行の説明コメントも更新する。
 設定コードは実行せずに読み取るため、変数・ループによるキー定義や `hidden/` の上書き、実行中アプリの状態は対象外。
 一覧には参照元の行番号を表示する。注釈付きの行が対応形式から外れると、エラーを表示して終了する。
-`Leader` の実際のキーは WezTerm の行で確認できる。
+
+キーは Mac の記号（`⌃` Control / `⌥` Option / `⇧` Shift / `⌘` Command、`↩` Enter / `⇥` Tab）で表示し、検索用にキー名も併記する（例: `⇧⌘D (Shift+Cmd+D)`）。
+記号は入力しづらいため、検索は `cmd` や `opt` などのキー名で行う。WezTerm の `Leader` は実際のキーに展開する（例: `⌃Q → w (Ctrl+Q → w)`）。
+設定ファイルや `zsh/keybindings-defaults.tsv` 側は従来どおり `Ctrl` / `Alt` / `Shift` / `Cmd` で書き、表示時に変換する。
+各列は開始位置を揃え、列の間を4桁あける（`zsh/keybindings.py` の `COLUMN_GAP` で変更できる）。
 
 確認コマンド:
 
@@ -329,7 +333,7 @@ git config --global user.email "you@example.com"   # 会社Macは会社メール
 ### 表示要素
 
 ```
-   ~/path  on   main [+1!2?3]  via   v20.10.0  on   prod
+   ~/path   main [+1!2?3]   v20.10.0   prod
 ❯
 ```
 
@@ -341,7 +345,6 @@ git config --global user.email "you@example.com"   # 会社Macは会社メール
 | `[+1!2?3]` | Git ステータス（staged/modified/untracked/deleted/conflicted/ahead/behind） |
 |  /  /  /  /  /  /  | 言語ランタイムバージョン（Node/Python/Go/Rust/Java/Ruby/PHP） |
 |  /  ☸ /  /  | Docker context / Kubernetes context / AWS profile / GCP account |
-| 右プロンプト | コマンド実行時間（500ms 以上）+ 現在時刻 |
 
 ### カスタマイズ
 
