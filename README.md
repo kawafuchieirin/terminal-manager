@@ -111,14 +111,22 @@ pre-commit autoupdate        # 各フックのバージョンを最新化
 
 ## リリース
 
-`v*.*.*` 形式のタグを push すると `.github/workflows/release.yml` が GitHub Release を作成する
-（リリースノートは自動生成）。`workflow_dispatch` からタグを指定して手動実行もできる。
-同じタグのリリースが既にある場合はスキップする（冪等）。
+`main` に push（PR をマージ）すると `.github/workflows/release.yml` が動き、前回タグ以降の
+コンベンショナルコミットから次のバージョンを判定してタグを打ち、GitHub Release を作成する
+（リリースノートは自動生成）。タグを手で打つ必要はない。
 
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
+| コミットの型 | 上がる桁 | 例 |
+|-------------|---------|-----|
+| `feat!:` / 本文に `BREAKING CHANGE:` | major | v1.2.3 → v2.0.0 |
+| `feat:` | minor | v1.2.3 → v1.3.0 |
+| `fix:` `docs:` `refactor:` `chore:` `ci:` 等 | patch | v1.2.3 → v1.2.4 |
+| 該当する型のコミットなし | リリースしない | — |
+
+初回リリースは `v0.1.0` から始まる。マージコミットは判定対象から除外し、同じタグのリリースが
+既にある場合はスキップする（冪等）。
+
+バージョンを明示したいときは Actions の `Release` を手動実行（`workflow_dispatch`）し、
+`bump` に `auto` / `patch` / `minor` / `major` を指定する。
 
 ## 設計方針
 
