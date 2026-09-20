@@ -8,7 +8,7 @@ function kb() {
   fi
 
   local result=0
-  fzf --header-lines=1 --delimiter=$'\t' --layout=reverse \
+  fzf --header-lines=1 --layout=reverse \
     --prompt='keybindings> ' \
     --header='ツール・キー・説明で検索 / Enter: 表示のみ / Esc: 閉じる' \
     --query="$*" <<< "$catalog" || result=$?
