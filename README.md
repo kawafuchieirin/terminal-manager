@@ -329,7 +329,7 @@ git config --global user.email "you@example.com"   # 会社Macは会社メール
 ### 表示要素
 
 ```
-   ~/path  on   main [+1!2?3]  via   v20.10.0  on   prod
+   ~/path   main [+1!2?3]   v20.10.0   prod
 ❯
 ```
 
@@ -341,7 +341,6 @@ git config --global user.email "you@example.com"   # 会社Macは会社メール
 | `[+1!2?3]` | Git ステータス（staged/modified/untracked/deleted/conflicted/ahead/behind） |
 |  /  /  /  /  /  /  | 言語ランタイムバージョン（Node/Python/Go/Rust/Java/Ruby/PHP） |
 |  /  ☸ /  /  | Docker context / Kubernetes context / AWS profile / GCP account |
-| 右プロンプト | コマンド実行時間（500ms 以上）+ 現在時刻 |
 
 ### カスタマイズ
 
