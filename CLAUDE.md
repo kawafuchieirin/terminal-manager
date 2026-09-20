@@ -35,3 +35,7 @@ macOS 開発環境のターミナル一式（**WezTerm + Zsh + Starship**）の�
 - 各ツールの詳細は**そのディレクトリの `README.md`**（`wezterm/` `zsh/` `zsh/hidden/` `starship/` `pet/` `lazygit/` `gh-dash/`）。同じ表をルートと重複管理しない。
 
 設定ファイルや `setup.sh` を変更したら `.claude/rules/update-readme.md` の規約に従い、該当ディレクトリの README（必要ならルートの索引も）を実態と一致させる。エイリアス表は `zsh/aliases.zsh` から生成し、推測で項目を増やさない。
+
+## コミットとリリース
+
+コミットメッセージの型がそのまま公開バージョンを決める（`main` への push で `.github/workflows/release.yml` がタグと GitHub Release を自動作成）。型の選び方・破壊的変更の基準・書き方は `.claude/rules/commit-convention.md` に従う。現在 0.x 系のため、破壊的変更でも `!` と行頭 `BREAKING CHANGE:` は使わない（v1.0.0 は手動リリースで出す）。
