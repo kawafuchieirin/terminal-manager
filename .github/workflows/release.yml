@@ -1,20 +1,32 @@
 name: Release
 
-# `v` で始まるタグ（例: v1.0.0）を push すると GitHub Release を自動作成する。
-# 手動実行（workflow_dispatch）ではタグを指定してリリースを作成できる。
+# main への push（PR マージ）をきっかけに、コンベンショナルコミットから次のバージョンを
+# 判定してタグを打ち、GitHub Release を作成する。タグを手で打つ必要はない。
+# workflow_dispatch では bump レベル（patch/minor/major）を明示して手動リリースもできる。
 on:
   push:
-    tags:
-      - "v*.*.*"
+    branches:
+      - main
   workflow_dispatch:
     inputs:
-      tag:
-        description: "リリースするタグ（例: v1.0.0）。事前に push 済みであること"
+      bump:
+        description: "上げ方（auto はコミットから判定）"
         required: true
-        type: string
+        default: auto
+        type: choice
+        options:
+          - auto
+          - patch
+          - minor
+          - major
 
 permissions:
-  contents: write # Release 作成に必要
+  contents: write # タグの push と Release 作成に必要
+
+# 連続マージでタグが競合しないよう直列化する
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
   release:
@@ -23,31 +35,88 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # リリースノート生成のため全履歴を取得
+          fetch-depth: 0 # タグ履歴とリリースノート生成のため全履歴を取得
 
-      - name: Resolve tag
-        id: tag
+      - name: Decide next version
+        id: version
         env:
-          EVENT_NAME: ${{ github.event_name }}
-          INPUT_TAG: ${{ inputs.tag }}
+          BUMP_INPUT: ${{ inputs.bump || 'auto' }}
         run: |
-          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-            TAG="$INPUT_TAG"
+          set -euo pipefail
+
+          LATEST_TAG=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
+          echo "latest tag: ${LATEST_TAG:-(none)}"
+
+          # 前回リリース以降のコミットを対象にする（初回は全履歴）
+          if [ -n "$LATEST_TAG" ]; then
+            RANGE="$LATEST_TAG..HEAD"
           else
-            TAG="$GITHUB_REF_NAME"
+            RANGE="HEAD"
           fi
-          # タグ形式を検証（インジェクション対策・想定外の値を弾く）
-          if ! printf '%s' "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$'; then
-            echo "Invalid tag format: $TAG" >&2
-            exit 1
+          # マージコミットは "Merge pull request ..." で型を持たないため除外する
+          SUBJECTS=$(git log --no-merges --format='%s' "$RANGE")
+          BODIES=$(git log --no-merges --format='%B' "$RANGE")
+
+          BUMP=""
+          if [ "$BUMP_INPUT" != "auto" ]; then
+            BUMP="$BUMP_INPUT"
+          elif printf '%s\n' "$BODIES" | grep -qE '^BREAKING[ -]CHANGE:' \
+            || printf '%s\n' "$SUBJECTS" | grep -qE '^[a-z]+(\([^)]*\))?!:'; then
+            BUMP=major
+          elif printf '%s\n' "$SUBJECTS" | grep -qE '^feat(\([^)]*\))?:'; then
+            BUMP=minor
+          elif printf '%s\n' "$SUBJECTS" | grep -qE '^(fix|perf|refactor|docs|test|chore|style|build|ci|revert)(\([^)]*\))?:'; then
+            BUMP=patch
           fi
-          echo "name=$TAG" >> "$GITHUB_OUTPUT"
+
+          # リリースに値するコミットが無ければ何もしない
+          if [ -z "$BUMP" ]; then
+            echo "No conventional commits since ${LATEST_TAG:-the beginning}. Skipping release."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # 初回リリースは v0.0.1 ではなく v0.1.0 から始める
+          if [ -z "$LATEST_TAG" ] && [ "$BUMP" = patch ]; then
+            BUMP=minor
+          fi
+
+          IFS=. read -r MAJOR MINOR PATCH <<<"${LATEST_TAG#v}"
+          MAJOR=${MAJOR:-0}; MINOR=${MINOR:-0}; PATCH=${PATCH:-0}
+          case "$BUMP" in
+            major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+            minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
+            patch) PATCH=$((PATCH + 1)) ;;
+          esac
+          TAG="v${MAJOR}.${MINOR}.${PATCH}"
+
+          echo "bump: $BUMP -> $TAG"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Create tag
+        if: steps.version.outputs.skip == 'false'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          set -euo pipefail
+          # 既に同じタグがある場合は打ち直さない（冪等）
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "Tag $TAG already exists. Skipping tag creation."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "$TAG"
+          git push origin "$TAG"
 
       - name: Create GitHub Release
+        if: steps.version.outputs.skip == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ steps.tag.outputs.name }}
+          TAG: ${{ steps.version.outputs.tag }}
         run: |
+          set -euo pipefail
           # 既にリリースが存在する場合はスキップ（冪等）
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo "Release $TAG already exists. Skipping."
