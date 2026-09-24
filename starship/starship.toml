@@ -51,57 +51,66 @@ symbol = " "
 format = "[$symbol$branch]($style) "
 style = "bold purple"
 
+# 記号だと意味を思い出せないため、日本語ラベルで表示する。
+# 各項目の先頭に空白を入れ、format 側の閉じ括弧前にも空白を置いて [ 変更2 未追跡3 ] と揃える。
 [git_status]
-format = '([\[$all_status$ahead_behind\]]($style) )'
-staged = "+${count}"
-modified = "!${count}"
-untracked = "?${count}"
-deleted = "x${count}"
-conflicted = "=${count}"
-ahead = "⇡${count}"
-behind = "⇣${count}"
-diverged = "⇡${ahead_count}⇣${behind_count}"
+format = '([\[$all_status$ahead_behind \]]($style) )'
+staged = " ステージ${count}"
+modified = " 変更${count}"
+untracked = " 未追跡${count}"
+deleted = " 削除${count}"
+conflicted = " 衝突${count}"
+ahead = " 未push${count}"
+behind = " 未pull${count}"
+diverged = " 未push${ahead_count} 未pull${behind_count}"
 style = "bold yellow"
 
 [git_state]
 format = '\([$state( $progress_current/$progress_total)]($style)\) '
 style = "bold yellow"
+rebase = "リベース中"
+merge = "マージ中"
+revert = "リバート中"
+cherry_pick = "チェリーピック中"
+bisect = "二分探索中"
+am = "パッチ適用中"
+am_or_rebase = "パッチ適用/リベース中"
 
 # =========================
 # Languages / Runtimes
 # =========================
 [nodejs]
-symbol = " "
+symbol = " Node "
 format = "[$symbol($version )]($style)"
 style = "bold green"
 
 [python]
-symbol = " "
+symbol = " Python "
 format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
 style = "bold yellow"
 
 [golang]
-symbol = " "
+symbol = " Go "
 format = "[$symbol($version )]($style)"
 style = "bold cyan"
 
 [rust]
-symbol = " "
+symbol = " Rust "
 format = "[$symbol($version )]($style)"
 style = "bold red"
 
 [java]
-symbol = " "
+symbol = " Java "
 format = "[$symbol($version )]($style)"
 style = "bold red"
 
 [ruby]
-symbol = " "
+symbol = " Ruby "
 format = "[$symbol($version )]($style)"
 style = "bold red"
 
 [php]
-symbol = " "
+symbol = " PHP "
 format = "[$symbol($version )]($style)"
 style = "bold blue"
 
@@ -109,23 +118,24 @@ style = "bold blue"
 # Cloud / Container
 # =========================
 [docker_context]
-symbol = " "
+symbol = " Docker "
 format = "[$symbol$context]($style) "
 style = "bold blue"
 only_with_files = true
 
 [kubernetes]
-symbol = "☸ "
+symbol = "☸ K8s "
 format = '[$symbol$context( \($namespace\))]($style) '
 style = "bold cyan"
 disabled = false
 
 [aws]
 symbol = "  "
-format = '[$symbol($profile )(\[$duration\] )]($style)'
+# プロファイル未設定のときはアイコンだけ出るので、ラベルは $profile 側の括弧に入れる
+format = '[$symbol(AWS $profile )(\[$duration\] )]($style)'
 style = "bold yellow"
 
 [gcloud]
-symbol = " "
+symbol = " GCP "
 format = '[$symbol$account(@$domain)(\($region\))]($style) '
 style = "bold blue"
