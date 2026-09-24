@@ -131,6 +131,21 @@ config.keys = {
     }),
   },
 
+  -- Ctrl+C: 選択中のテキストがあればコピー、なければ従来どおり SIGINT を送る。
+  -- 選択したまま実行中のコマンドを止めたいときは、Esc か左クリックで選択を外してから押す。
+  {
+    key = "c", mods = "CTRL", -- kb: 選択中ならコピー、選択がなければ中断（SIGINT）
+    action = wezterm.action_callback(function(window, pane)
+      local selection = window:get_selection_text_for_pane(pane)
+      if selection and selection ~= "" then
+        window:perform_action(wezterm.action.CopyTo("ClipboardAndPrimarySelection"), pane)
+        window:perform_action(wezterm.action.ClearSelection, pane)
+      else
+        window:perform_action(wezterm.action.SendKey({ key = "c", mods = "CTRL" }), pane)
+      end
+    end),
+  },
+
   -- 透過トグル (設定ファイル値 <-> 1.0)
   {
     key = "o", mods = "CTRL|SHIFT", -- kb: 背景透過のオン / オフ
