@@ -3,6 +3,10 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+# パッケージ一覧と設定の配置先は uninstall.sh と共有する
+# shellcheck source=lib/config.sh
+source "$SCRIPT_DIR/lib/config.sh"
+
 # =========================
 # Homebrew パッケージ
 # =========================
@@ -21,15 +25,7 @@ install_brew_packages() {
     brew uninstall --cask wezterm
   fi
 
-  # cask (アプリ・フォント)
-  local casks=(
-    wezterm@nightly
-    font-plemol-jp-nf
-    font-udev-gothic
-    font-hackgen-nerd
-  )
-
-  for cask in "${casks[@]}"; do
+  for cask in "${BREW_CASKS[@]}"; do
     if brew list --cask "$cask" &>/dev/null; then
       echo "既にインストール済み: $cask"
     else
@@ -38,24 +34,7 @@ install_brew_packages() {
     fi
   done
 
-  # formula
-  local packages=(
-    python
-    starship
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    fzf
-    fd
-    ripgrep
-    bat
-    pet
-    lazygit
-    pre-commit
-    gitleaks
-    shellcheck
-  )
-
-  for pkg in "${packages[@]}"; do
+  for pkg in "${BREW_FORMULAE[@]}"; do
     if brew list "$pkg" &>/dev/null; then
       echo "既にインストール済み: $pkg"
     else
@@ -71,8 +50,8 @@ install_brew_packages() {
 # WezTerm
 # =========================
 setup_wezterm() {
-  local legacy_config="$HOME/.wezterm.lua"
-  local config_dir="$HOME/.config/wezterm"
+  local legacy_config="$WEZTERM_LEGACY_CONFIG"
+  local config_dir="$WEZTERM_CONFIG_DIR"
   local source_dir="$SCRIPT_DIR/wezterm"
 
   echo "=== WezTerm セットアップ ==="
@@ -107,9 +86,10 @@ setup_wezterm() {
 # Starship
 # =========================
 setup_starship() {
-  local config_dir="$HOME/.config"
   local source_file="$SCRIPT_DIR/starship/starship.toml"
-  local target_file="$config_dir/starship.toml"
+  local target_file="$STARSHIP_CONFIG"
+  local config_dir
+  config_dir="$(dirname "$target_file")"
 
   echo "=== Starship セットアップ ==="
 
@@ -135,8 +115,8 @@ setup_starship() {
 # =========================
 setup_zsh() {
   local source_dir="$SCRIPT_DIR/zsh"
-  local config_dir="$HOME/.config/zsh"
-  local zshrc="$HOME/.zshrc"
+  local config_dir="$ZSH_CONFIG_DIR"
+  local zshrc="$ZSHRC"
 
   echo "=== Zsh セットアップ ==="
 
@@ -169,11 +149,11 @@ setup_zsh() {
     if [ -f "$zshrc" ] && [ -s "$zshrc" ] && [ "$(tail -c 1 "$zshrc")" != "" ]; then
       echo "" >> "$zshrc"
     fi
-    cat >> "$zshrc" << 'EOF'
+    cat >> "$zshrc" << EOF
 
-# terminal-manager リポジトリから zsh 設定を読み込む
-if [ -f "$HOME/.config/zsh/.zshrc" ]; then
-  source "$HOME/.config/zsh/.zshrc"
+$ZSHRC_MARKER
+if [ -f "\$HOME/.config/zsh/.zshrc" ]; then
+  source "\$HOME/.config/zsh/.zshrc"
 fi
 EOF
   fi
@@ -188,10 +168,10 @@ EOF
 # pet (コマンドスニペット管理)
 # =========================
 setup_pet() {
-  local config_dir="$HOME/.config/pet"
+  local config_dir="$PET_CONFIG_DIR"
   local source_snippet="$SCRIPT_DIR/pet/snippet.toml"
-  local target_snippet="$config_dir/snippet.toml"
-  local config_file="$config_dir/config.toml"
+  local target_snippet="$PET_SNIPPET"
+  local config_file="$PET_CONFIG"
   local select_cmd="$SCRIPT_DIR/pet/select.sh"
 
   echo "=== pet セットアップ ==="
@@ -242,9 +222,9 @@ EOF
 setup_lazygit() {
   # lazygit は macOS では既定で ~/Library/Application Support/lazygit/ を参照する
   # （XDG_CONFIG_HOME 未設定時）。リポジトリ側を実体とし、ここにリンクを張る。
-  local config_dir="$HOME/Library/Application Support/lazygit"
+  local config_dir="$LAZYGIT_CONFIG_DIR"
   local source_file="$SCRIPT_DIR/lazygit/config.yml"
-  local target_file="$config_dir/config.yml"
+  local target_file="$LAZYGIT_CONFIG"
 
   echo "=== lazygit セットアップ ==="
 

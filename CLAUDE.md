@@ -21,13 +21,19 @@ macOS 開発環境のターミナル一式（**WezTerm + Zsh + Starship**）の�
 | Starship | `starship/starship.toml` | `~/.config/starship.toml` |
 | Zsh | `zsh/` | `~/.config/zsh/`（`~/.zshrc` から source） |
 
-## セットアップ
+## セットアップと取り外し
 
 ```bash
-./setup.sh
+./setup.sh                 # 構築
+./uninstall.sh --dry-run   # 取り外し対象の確認
+./uninstall.sh             # 取り外し
 ```
 
 `setup.sh` は関数単位で分割（`install_brew_packages` / `setup_wezterm` / `setup_starship` / `setup_zsh` / `setup_pet` / `setup_lazygit` / `setup_pre_commit`）。新ツール追加時は同パターンで関数を足し `main` から呼び出す。
+
+`uninstall.sh` は対になる `uninstall_*` 関数を持つ。**`setup.sh` に作る処理を足したら、`uninstall.sh` に外す処理も同時に足す**（消し残しを防ぐ）。パッケージ一覧と設定の配置先は `lib/config.sh` が単一の情報源で、両スクリプトが source する。ここを経由せずパスを直書きしない。
+
+`uninstall.sh` は安全側に倒す方針: Homebrew パッケージは `--purge-brew` 指定時のみ削除、`~/.zshrc` は編集前にバックアップ、判断がつかないもの（リンクでない実体・マーカー不一致）は消さず警告する。
 
 ## ドキュメント構成と自動更新
 
