@@ -45,6 +45,7 @@ cd ~/work-space/terminal-manager
 | [pet/README.md](pet/README.md) | コマンドスニペットの呼び出し（`Ctrl+G`）・登録・共有、`select.sh` の仕組み |
 | [lazygit/README.md](lazygit/README.md) | Git TUI の設定と主なキー |
 | [gh-dash/README.md](gh-dash/README.md) | GitHub の Issue / PR をターミナルで扱う（`setup.sh` 対象外・手動導入） |
+| [cornix-lp/README.md](cornix-lp/README.md) | 分割キーボード Cornix LP のキーマップ（Vial の `.vil`）の保存・読み込み・個体間移行・整形 |
 | [wezterm/recommendations.md](wezterm/recommendations.md) | WezTerm のおすすめ設定リファレンス（採用候補のメモ） |
 
 ## ファイル構成
@@ -65,6 +66,9 @@ cd ~/work-space/terminal-manager
 | `pet/select.sh` | pet の `selectcmd`（色分け・カテゴリ絞り込み付き fzf ラッパー） | `~/.config/pet/config.toml` から参照 |
 | `lazygit/config.yml` | [lazygit](https://github.com/jesseduffield/lazygit) の設定 | `~/Library/Application Support/lazygit/config.yml` |
 | `gh-dash/config.yml` | [gh-dash](https://www.gh-dash.dev/) の設定 | `~/.config/gh-dash/config.yml`（手動リンク） |
+| `cornix-lp/keymaps/*.vil` | [Vial](https://get.vial.today/) で保存した Cornix LP のキーマップ | Vial から手動で読み込む（リンクなし） |
+| `cornix-lp/format-vil.sh` | `.vil` を `jq` で整形（pre-commit から自動実行） | — |
+| `cornix-lp/test-format-vil.sh` | `format-vil.sh` のテスト | — |
 | `.pre-commit-config.yaml` | [pre-commit](https://pre-commit.com/) フック定義 | — |
 | `.github/workflows/release.yml` | タグ push で GitHub Release を作成 | — |
 | `.claude/rules/` | Claude Code 用のルール（README 更新規約など） | — |
@@ -83,7 +87,7 @@ cd ~/work-space/terminal-manager
 1. **Homebrew パッケージのインストール**
    - cask: `wezterm@nightly` / `font-plemol-jp-nf` / `font-udev-gothic` / `font-hackgen-nerd`
    - formula: `python` / `starship` / `zsh-autosuggestions` / `zsh-syntax-highlighting` / `fzf` / `fd` /
-     `ripgrep` / `bat` / `pet` / `lazygit` / `pre-commit` / `gitleaks` / `shellcheck`
+     `ripgrep` / `bat` / `pet` / `lazygit` / `pre-commit` / `gitleaks` / `shellcheck` / `jq`
    - 安定版 `wezterm` が入っている場合は自動で nightly に置き換える
 2. **WezTerm**: `~/.config/wezterm/` を `wezterm/` へリンク（レガシーな `~/.wezterm.lua` があれば `.bak` へ退避）
 3. **Starship**: `~/.config/starship.toml` を `starship/starship.toml` へリンク
@@ -139,6 +143,7 @@ PATH や API キーが入っている場合は、先に別の場所へ退避し�
 | `check-merge-conflict` | マージ競合マーカーの残存を検出 |
 | `trailing-whitespace` / `end-of-file-fixer` | 行末空白・末尾改行の整形 |
 | [shellcheck](https://www.shellcheck.net/) | シェルスクリプトの lint（`zsh/` は zsh 固有構文のため除外） |
+| `format-vil` | Vial のキーマップ（`.vil`）を `jq` で整形し、行単位の diff にする（[cornix-lp/README.md](cornix-lp/README.md#pre-commit)） |
 
 ```bash
 pre-commit run --all-files   # 全ファイルに対して手動実行

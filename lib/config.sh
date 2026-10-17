@@ -34,6 +34,9 @@ BREW_FORMULAE=(
   pre-commit
   gitleaks
   shellcheck
+  # cornix-lp/format-vil.sh が .vil の整形に使う。1.7 未満は数値リテラルを
+  # 作り直して uid を壊すため、新しい版を Homebrew で入れる
+  jq
 )
 
 # =========================

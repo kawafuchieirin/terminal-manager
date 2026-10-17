@@ -18,6 +18,7 @@
 | `pet/` | `pet/README.md` | 呼び出し・登録・編集・共有、`select.sh` の仕組み |
 | `lazygit/` | `lazygit/README.md` | 設定値と意図、主なキー |
 | `gh-dash/` | `gh-dash/README.md` | 導入手順（`setup.sh` 対象外）、日常操作、`config.yml` の内容 |
+| `cornix-lp/` | `cornix-lp/README.md` | Vial での保存・読み込み手順、`format-vil.sh` の使い方、別個体への移行とファームウェアバージョンの揃え方、コミットメッセージへの FW バージョン記載 |
 
 新しいツールを追加したら、そのディレクトリに README を作り、ルート `README.md` の
 「ドキュメント索引」と「ファイル構成」に 1 行ずつ足す。
