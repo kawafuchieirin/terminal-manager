@@ -19,3 +19,13 @@ repos:
     hooks:
       - id: shellcheck
         exclude: ^zsh/
+
+  # Vial のキーマップ（.vil）を整形する。Vial が書き出す 1 行 JSON のままでは
+  # diff がファイル全体になり、キーの変更履歴が読めないため
+  - repo: local
+    hooks:
+      - id: format-vil
+        name: format .vil (Vial keymap)
+        entry: cornix-lp/format-vil.sh
+        language: script
+        files: \.vil$
